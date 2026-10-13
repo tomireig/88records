@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { logout } from "@/app/actions/auth";
 
 const ITEMS = [
   { href: "/", label: "Panel" },
@@ -19,8 +20,10 @@ export function Nav() {
   const path = usePathname();
   const active = (href: string) => (href === "/" ? path === "/" : path.startsWith(href));
 
+  if (path === "/login") return null;
+
   return (
-    <aside className="border-b border-ink bg-ink text-paper md:sticky md:top-0 md:h-screen md:w-60 md:shrink-0 md:border-b-0 md:border-r">
+    <aside className="border-b border-ink bg-ink text-paper md:sticky md:top-0 md:flex md:h-screen md:w-60 md:shrink-0 md:flex-col md:border-b-0 md:border-r">
       <div className="flex items-baseline justify-between px-4 pt-4 md:block md:px-6 md:pt-8">
         <Link href="/" className="block text-xl font-bold leading-none tracking-tight">
           88RECORDS<span className="text-orange">®</span>
@@ -41,6 +44,9 @@ export function Nav() {
           </Link>
         ))}
       </nav>
+      <form action={logout} className="hidden md:mt-auto md:block md:px-6 md:py-6">
+        <button className="text-[10px] font-bold uppercase tracking-widest text-paper/50 hover:text-paper">Salir</button>
+      </form>
     </aside>
   );
 }

@@ -53,6 +53,15 @@ Dos terminales: `pnpm db:local` en una y `pnpm dev` en la otra.
 
 Si tenés Docker, podés reemplazar `pnpm db:local` por `docker compose up -d`.
 
+## Online (Vercel)
+
+La app vive en el proyecto `88records` de Vercel, que despliega solo cada vez que se sube algo a `main`.
+
+- **Login:** una contraseña de equipo, en la variable `APP_PASSWORD` del proyecto en Vercel. Para cambiarla, editala ahí y volvé a desplegar.
+- **Base de datos:** Neon, conectada desde la pestaña Storage del proyecto. Carga sola `DATABASE_URL` y `DATABASE_URL_UNPOOLED`.
+- **Migraciones:** corren solas en cada deploy, antes del build.
+- **IA:** para que IA Studio use Claude, agregá `ANTHROPIC_API_KEY` en las variables del proyecto.
+
 ## Comandos
 
 | Comando | Qué hace |

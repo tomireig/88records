@@ -16,6 +16,7 @@
     "react-dom": "19.3.0"
   },
   "devDependencies": {
+    "@prisma/nextjs-monorepo-workaround-plugin": "6.19.3",
     "@tailwindcss/postcss": "4.3.3",
     "@types/node": "22.18.0",
     "@types/react": "19.3.0",
