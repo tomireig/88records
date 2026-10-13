@@ -1,5 +1,0 @@
-{
-  "$schema": "https://openapi.vercel.sh/vercel.json",
-  "installCommand": "pnpm install --frozen-lockfile",
-  "buildCommand": "if [ -n \"$DATABASE_URL\" ]; then pnpm --filter @88/db exec prisma migrate deploy; fi && next build"
-}

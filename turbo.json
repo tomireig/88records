@@ -1,9 +1,0 @@
-{
-  "$schema": "https://turbo.build/schema.json",
-  "globalEnv": ["DATABASE_URL", "DATABASE_URL_UNPOOLED", "ANTHROPIC_API_KEY", "AI_MODEL", "APP_PASSWORD", "AUTH_SECRET"],
-  "tasks": {
-    "build": { "dependsOn": ["^build"], "outputs": [".next/**", "!.next/cache/**"] },
-    "typecheck": { "dependsOn": ["^build"] },
-    "dev": { "cache": false, "persistent": true }
-  }
-}
