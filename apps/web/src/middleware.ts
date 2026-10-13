@@ -4,8 +4,8 @@ import { SESSION_COOKIE, authDisabled, verifyToken } from "@/lib/session";
 export async function middleware(req: NextRequest) {
   if (authDisabled()) return NextResponse.next();
 
-  if (!process.env.APP_PASSWORD || !process.env.AUTH_SECRET) {
-    return new NextResponse("Falta configurar APP_PASSWORD y AUTH_SECRET.", { status: 503 });
+  if (!process.env.APP_PASSWORD) {
+    return new NextResponse("Falta configurar APP_PASSWORD en Vercel.", { status: 503 });
   }
 
   if (await verifyToken(req.cookies.get(SESSION_COOKIE)?.value)) return NextResponse.next();

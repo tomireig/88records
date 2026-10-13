@@ -8,8 +8,9 @@ export const SESSION_DAYS = 30;
 const enc = new TextEncoder();
 
 async function hmac(data: string): Promise<string> {
-  const secret = process.env.AUTH_SECRET;
-  if (!secret) throw new Error("Falta AUTH_SECRET");
+  // Sin AUTH_SECRET firma con la contraseña: cambiarla cierra todas las sesiones.
+  const secret = process.env.AUTH_SECRET || process.env.APP_PASSWORD;
+  if (!secret) throw new Error("Falta APP_PASSWORD");
   const key = await crypto.subtle.importKey("raw", enc.encode(secret), { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
   const sig = await crypto.subtle.sign("HMAC", key, enc.encode(data));
   return Array.from(new Uint8Array(sig), (b) => b.toString(16).padStart(2, "0")).join("");
