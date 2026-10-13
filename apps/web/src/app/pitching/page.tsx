@@ -6,12 +6,14 @@ import {
   deleteCurator,
   deletePitch,
   setPitchStage,
+  updateCurator,
   updatePitch,
 } from "@/app/actions/pitching";
 import { ConfirmButton } from "@/components/confirm-button";
 import { Generator } from "@/components/generator";
 import { Empty, PageHeader, Pill, Section } from "@/components/ui";
 import { fmt, relative, today } from "@/lib/dates";
+import { SubmitButton } from "@/components/submit-button";
 import { PITCH_ORDER, PITCH_STAGES, num } from "@/lib/labels";
 
 export const dynamic = "force-dynamic";
@@ -74,7 +76,7 @@ export default async function PitchingPage({ searchParams }: { searchParams: Pro
                               Follow-up {relative(p.followUpAt, now)}
                             </p>
                           )}
-                          {stage === "ACCEPTED" && p.adds > 0 && <p className="mt-1 text-xs font-bold">{num(p.adds)} adds</p>}
+                          {stage === "ACCEPTED" && p.adds > 0 && <p className="mt-1 text-xs font-bold">{num(p.adds)} {p.adds === 1 ? "add" : "adds"}</p>}
                           <form action={setPitchStage} className="mt-2 flex gap-1">
                             <input type="hidden" name="id" value={p.id} />
                             <select name="stage" defaultValue={p.stage} className="input py-1 text-xs">
@@ -82,7 +84,7 @@ export default async function PitchingPage({ searchParams }: { searchParams: Pro
                                 <option key={s} value={s}>{PITCH_STAGES[s]}</option>
                               ))}
                             </select>
-                            <button className="btn btn-sm">OK</button>
+                            <SubmitButton className="btn btn-sm" pendingText="Guardando…">OK</SubmitButton>
                           </form>
                           <details className="mt-2">
                             <summary className="cursor-pointer text-[10px] font-bold uppercase tracking-widest text-mute">
@@ -101,7 +103,7 @@ export default async function PitchingPage({ searchParams }: { searchParams: Pro
                                 </label>
                               </div>
                               <textarea name="message" rows={3} defaultValue={p.message ?? ""} placeholder="Mensaje enviado" className="input" />
-                              <button className="btn btn-primary btn-sm">Guardar</button>
+                              <SubmitButton className="btn btn-primary btn-sm" pendingText="Guardando…">Guardar</SubmitButton>
                             </form>
                             <form action={deletePitch} className="mt-2">
                               <input type="hidden" name="id" value={p.id} />
@@ -157,7 +159,7 @@ export default async function PitchingPage({ searchParams }: { searchParams: Pro
                       <form action={createPitch}>
                         <input type="hidden" name="curatorId" value={c.id} />
                         <input type="hidden" name="trackId" value={selected!.id} />
-                        <button className="btn btn-sm">Sumar al pipeline</button>
+                        <SubmitButton className="btn btn-sm" pendingText="Agregando…">Sumar al pipeline</SubmitButton>
                       </form>
                     )}
                   </li>
@@ -209,10 +211,29 @@ export default async function PitchingPage({ searchParams }: { searchParams: Pro
                     <td className="uppercase">{c.language}</td>
                     <td className="tabular-nums">{c._count.pitches}</td>
                     <td>
-                      <form action={deleteCurator}>
-                        <input type="hidden" name="id" value={c.id} />
-                        <ConfirmButton message={`¿Borrar a ${c.name} y sus pitches?`}>Borrar</ConfirmButton>
-                      </form>
+                      <details>
+                        <summary className="cursor-pointer text-[10px] font-bold uppercase tracking-widest">Editar</summary>
+                        <form action={updateCurator} className="mt-2 grid min-w-[280px] gap-2">
+                          <input type="hidden" name="id" value={c.id} />
+                          <input name="name" required defaultValue={c.name} placeholder="Curador" className="input" />
+                          <input name="playlist" required defaultValue={c.playlist} placeholder="Playlist" className="input" />
+                          <input name="url" type="url" defaultValue={c.url ?? ""} placeholder="Link" className="input" />
+                          <input name="genres" defaultValue={c.genres.join(", ")} placeholder="Géneros" className="input" />
+                          <input name="followers" inputMode="numeric" defaultValue={c.followers ?? ""} placeholder="Seguidores" className="input" />
+                          <input name="email" type="email" defaultValue={c.email ?? ""} placeholder="Email" className="input" />
+                          <input name="instagram" defaultValue={c.instagram ?? ""} placeholder="Instagram" className="input" />
+                          <select name="language" defaultValue={c.language} className="input">
+                            <option value="es">Español</option>
+                            <option value="en">Inglés</option>
+                          </select>
+                          <input name="notes" defaultValue={c.notes ?? ""} placeholder="Notas" className="input" />
+                          <SubmitButton className="btn btn-primary btn-sm">Guardar</SubmitButton>
+                        </form>
+                        <form action={deleteCurator} className="mt-2">
+                          <input type="hidden" name="id" value={c.id} />
+                          <ConfirmButton message={`¿Borrar a ${c.name} y sus pitches?`}>Borrar</ConfirmButton>
+                        </form>
+                      </details>
                     </td>
                   </tr>
                 ))}
@@ -261,7 +282,7 @@ export default async function PitchingPage({ searchParams }: { searchParams: Pro
             <input name="notes" className="input" />
           </label>
           <div>
-            <button className="btn btn-primary">Agregar curador</button>
+            <SubmitButton className="btn btn-primary" pendingText="Agregando…">Agregar curador</SubmitButton>
           </div>
         </form>
       </Section>

@@ -5,7 +5,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider  = "postgresql"
   url       = env("DATABASE_URL")
   // Conexión directa (sin pooler) para migraciones. Neon en Vercel la llama así.
   directUrl = env("DATABASE_URL_UNPOOLED")
@@ -18,6 +18,7 @@ model Artist {
   genre     String?
   instagram String?
   tiktok    String?
+  demo      Boolean  @default(false)
   createdAt DateTime @default(now())
 
   tracks Track[]
@@ -65,6 +66,7 @@ model Campaign {
   track       Track?         @relation(fields: [trackId], references: [id], onDelete: SetNull)
   releaseDate DateTime
   status      CampaignStatus @default(PLANNING)
+  demo        Boolean        @default(false)
   createdAt   DateTime       @default(now())
 
   tasks  CampaignTask[]
@@ -127,6 +129,7 @@ model ContentPiece {
   comments     Int           @default(0)
   shares       Int           @default(0)
   saves        Int           @default(0)
+  demo         Boolean       @default(false)
   createdAt    DateTime      @default(now())
 }
 
@@ -141,6 +144,7 @@ model Curator {
   instagram String?
   language  String   @default("es")
   notes     String?
+  demo      Boolean  @default(false)
   createdAt DateTime @default(now())
 
   pitches Pitch[]
@@ -176,6 +180,7 @@ model FanSnapshot {
   followers        Int      @default(0)
   emailSubs        Int      @default(0)
   superfans        Int      @default(0)
+  demo             Boolean  @default(false)
   createdAt        DateTime @default(now())
 }
 

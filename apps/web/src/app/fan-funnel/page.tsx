@@ -4,6 +4,7 @@ import { ConfirmButton } from "@/components/confirm-button";
 import { SuperfanCalculator } from "@/components/superfan-calculator";
 import { Empty, PageHeader, Section } from "@/components/ui";
 import { fmt, today } from "@/lib/dates";
+import { SubmitButton } from "@/components/submit-button";
 import { num, pct } from "@/lib/labels";
 
 export const dynamic = "force-dynamic";
@@ -109,7 +110,7 @@ export default async function FanFunnelPage() {
             Superfans
             <input name="superfans" inputMode="numeric" className="input" />
           </label>
-          <button className="btn btn-primary">Guardar mes</button>
+          <SubmitButton className="btn btn-primary" pendingText="Guardando…">Guardar mes</SubmitButton>
           <p className="text-xs text-mute md:col-span-6">Si el mes ya existe, se actualiza.</p>
         </form>
       </Section>

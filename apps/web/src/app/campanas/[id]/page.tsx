@@ -6,6 +6,7 @@ import { generateBatch } from "@/app/actions/content";
 import { ConfirmButton } from "@/components/confirm-button";
 import { PageHeader, Pill, Section } from "@/components/ui";
 import { dLabel, fmt, relative, toDateInput, today } from "@/lib/dates";
+import { SubmitButton } from "@/components/submit-button";
 import { CAMPAIGN_STATUS, FORMATS, PLATFORMS, STAGES, num } from "@/lib/labels";
 
 export const dynamic = "force-dynamic";
@@ -37,7 +38,7 @@ export default async function CampaignPage({ params }: { params: Promise<{ id: s
               </option>
             ))}
           </select>
-          <button className="btn">Guardar</button>
+          <SubmitButton className="btn" pendingText="Guardando…">Guardar</SubmitButton>
         </form>
       </PageHeader>
 
@@ -66,7 +67,7 @@ export default async function CampaignPage({ params }: { params: Promise<{ id: s
             Mover release
             <input type="date" name="releaseDate" defaultValue={toDateInput(campaign.releaseDate)} className="input" />
           </label>
-          <button className="btn">Mover</button>
+          <SubmitButton className="btn" pendingText="Guardando…">Mover</SubmitButton>
         </form>
       </div>
 
@@ -110,7 +111,7 @@ export default async function CampaignPage({ params }: { params: Promise<{ id: s
         aside={
           <form action={generateBatch}>
             <input type="hidden" name="campaignId" value={campaign.id} />
-            <button className="btn btn-blue btn-sm">Generar batch 20 piezas</button>
+            <SubmitButton className="btn btn-blue btn-sm" pendingText="Generando…">Generar batch 20 piezas</SubmitButton>
           </form>
         }
       >

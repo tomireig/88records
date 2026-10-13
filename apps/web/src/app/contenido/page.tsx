@@ -4,12 +4,13 @@ import { createPiece, deletePiece, generateBatch, movePiece, updatePiece } from 
 import { ConfirmButton } from "@/components/confirm-button";
 import { PageHeader, Pill, Section } from "@/components/ui";
 import { fmt, toDateInput, today } from "@/lib/dates";
+import { SubmitButton } from "@/components/submit-button";
 import { FORMATS, PLATFORMS, STAGES, STAGE_ORDER, isEnum, num } from "@/lib/labels";
 
 export const dynamic = "force-dynamic";
 
-export default async function ContentPage({ searchParams }: { searchParams: Promise<{ p?: string }> }) {
-  const { p } = await searchParams;
+export default async function ContentPage({ searchParams }: { searchParams: Promise<{ p?: string; todas?: string }> }) {
+  const { p, todas } = await searchParams;
   const platform: Platform | undefined = isEnum(PLATFORMS, p) ? p : undefined;
   const now = today();
 
@@ -34,7 +35,7 @@ export default async function ContentPage({ searchParams }: { searchParams: Prom
               </option>
             ))}
           </select>
-          <button className="btn btn-blue whitespace-nowrap">Generar batch 20 piezas</button>
+          <SubmitButton className="btn btn-blue whitespace-nowrap" pendingText="Generando…">Generar batch 20 piezas</SubmitButton>
         </form>
       </PageHeader>
 
@@ -52,12 +53,15 @@ export default async function ContentPage({ searchParams }: { searchParams: Prom
       <div className="-mx-4 mb-10 overflow-x-auto px-4 md:mx-0 md:px-0">
         <div className="grid min-w-[1000px] grid-cols-5 gap-3">
           {STAGE_ORDER.map((stage) => {
-            const col = pieces.filter((x) => x.stage === stage);
+            const all = pieces.filter((x) => x.stage === stage);
+            // Lo publicado crece sin parar: se ven las últimas 6 salvo que pidas todas.
+            const capped = stage === "PUBLISHED" && !todas && all.length > 6;
+            const col = capped ? [...all].sort((a, b) => (b.scheduledFor?.getTime() ?? 0) - (a.scheduledFor?.getTime() ?? 0)).slice(0, 6) : all;
             return (
               <div key={stage} className="flex flex-col gap-2">
                 <div className="flex items-baseline justify-between border-b-2 border-ink pb-1">
                   <p className="tag">{STAGES[stage]}</p>
-                  <span className="text-xs tabular-nums text-mute">{col.length}</span>
+                  <span className="text-xs tabular-nums text-mute">{all.length}</span>
                 </div>
                 {col.map((piece) => {
                   const late = piece.scheduledFor && piece.scheduledFor < now && stage !== "PUBLISHED";
@@ -121,7 +125,7 @@ export default async function ContentPage({ searchParams }: { searchParams: Prom
                             ))}
                           </div>
                           <textarea name="notes" defaultValue={piece.notes ?? ""} className="input" rows={2} placeholder="Notas" />
-                          <button className="btn btn-primary btn-sm">Guardar</button>
+                          <SubmitButton className="btn btn-primary btn-sm" pendingText="Guardando…">Guardar</SubmitButton>
                         </form>
                         <form action={deletePiece} className="mt-2">
                           <input type="hidden" name="id" value={piece.id} />
@@ -131,6 +135,11 @@ export default async function ContentPage({ searchParams }: { searchParams: Prom
                     </article>
                   );
                 })}
+                {capped && (
+                  <Link href={`/contenido?${new URLSearchParams({ ...(platform && { p: platform }), todas: "1" })}`} className="btn btn-sm">
+                    Ver las {all.length} publicadas
+                  </Link>
+                )}
               </div>
             );
           })}
@@ -177,7 +186,7 @@ export default async function ContentPage({ searchParams }: { searchParams: Prom
             <input name="hook" className="input" />
           </label>
           <div>
-            <button className="btn btn-primary">Agregar</button>
+            <SubmitButton className="btn btn-primary" pendingText="Agregando…">Agregar</SubmitButton>
           </div>
         </form>
       </Section>

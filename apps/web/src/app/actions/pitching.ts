@@ -26,6 +26,28 @@ export async function createCurator(fd: FormData) {
   revalidatePath("/", "layout");
 }
 
+export async function updateCurator(fd: FormData) {
+  const id = str(fd, "id");
+  const name = str(fd, "name");
+  const playlist = str(fd, "playlist");
+  if (!id || !name || !playlist) return;
+  await db.curator.update({
+    where: { id },
+    data: {
+      name,
+      playlist,
+      url: optStr(fd, "url"),
+      genres: list(fd, "genres"),
+      followers: optInt(fd, "followers"),
+      email: optStr(fd, "email"),
+      instagram: optStr(fd, "instagram"),
+      language: str(fd, "language") === "en" ? "en" : "es",
+      notes: optStr(fd, "notes"),
+    },
+  });
+  revalidatePath("/", "layout");
+}
+
 export async function deleteCurator(fd: FormData) {
   const id = str(fd, "id");
   if (!id) return;

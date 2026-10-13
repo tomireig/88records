@@ -3,6 +3,7 @@ import Link from "next/link";
 import { createCampaign } from "@/app/actions/campaigns";
 import { Empty, PageHeader, Pill, Section } from "@/components/ui";
 import { fmt, relative, today } from "@/lib/dates";
+import { SubmitButton } from "@/components/submit-button";
 import { CAMPAIGN_STATUS } from "@/lib/labels";
 
 export const dynamic = "force-dynamic";
@@ -45,7 +46,7 @@ export default async function CampaignsPage() {
           <p className="text-xs text-mute md:col-span-3">
             Se crean 15 tareas con fechas reales, de D−28 (subir a la distribuidora) a D+30 (retro).
           </p>
-          <button className="btn btn-primary">Crear campaña</button>
+          <SubmitButton className="btn btn-primary" pendingText="Agregando…">Crear campaña</SubmitButton>
         </form>
       </Section>
 
@@ -62,7 +63,7 @@ export default async function CampaignsPage() {
                 <Link key={c.id} href={`/campanas/${c.id}`} className="box block p-4 hover:border-orange">
                   <div className="flex items-start justify-between gap-2">
                     <p className="tag text-mute">{CAMPAIGN_STATUS[c.status]}</p>
-                    {late > 0 && c.status !== "DONE" && <Pill tone="orange">{late} vencidas</Pill>}
+                    {late > 0 && c.status !== "DONE" && <Pill tone="orange">{late} {late === 1 ? "vencida" : "vencidas"}</Pill>}
                   </div>
                   <p className="mt-2 text-xl font-bold uppercase leading-tight">{c.name}</p>
                   <p className="mt-1 text-sm text-mute">

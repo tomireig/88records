@@ -30,6 +30,7 @@ export async function generateAction(_prev: GenerateState, fd: FormData): Promis
   };
 
   const result = await generate(input);
+  if (result.fallbackReason) console.warn("IA Studio usó plantillas:", result.fallbackReason);
 
   await db.aiGeneration.create({
     data: {
@@ -44,8 +45,11 @@ export async function generateAction(_prev: GenerateState, fd: FormData): Promis
   return {
     text: result.text,
     provider: result.provider,
+    // El motivo técnico queda en el log del servidor, no en pantalla.
     notice: result.fallbackReason
-      ? `Se usó la plantilla local. Motivo: ${result.fallbackReason}`
+      ? process.env.ANTHROPIC_API_KEY
+        ? "La IA no respondió esta vez, así que usamos las plantillas del sello. Probá de nuevo en un rato."
+        : undefined
       : undefined,
   };
 }

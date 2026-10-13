@@ -12,3 +12,6 @@ export const KIND_LABELS: Record<GenerationKind, string> = {
   dm_es: "DM a curador (español)",
   dm_en: "DM a curador (inglés)",
 };
+
+/** Nombre para mostrar del proveedor guardado ("local", "anthropic:modelo"). */
+export const providerLabel = (p: string) => (p.startsWith("anthropic") ? "Generado con Claude" : "Plantillas del sello");

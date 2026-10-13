@@ -3,6 +3,7 @@ import { createArtist, createTrack, deleteTrack, updateTrack } from "@/app/actio
 import { ConfirmButton } from "@/components/confirm-button";
 import { Empty, PageHeader, Pill, Section } from "@/components/ui";
 import { fmt, toDateInput } from "@/lib/dates";
+import { SubmitButton } from "@/components/submit-button";
 import { TRACK_STATUS } from "@/lib/labels";
 
 export const dynamic = "force-dynamic";
@@ -119,7 +120,7 @@ export default async function CatalogPage() {
                         <form action={updateTrack} className="mt-2 grid min-w-[600px] gap-2 md:grid-cols-4">
                           <input type="hidden" name="id" value={t.id} />
                           <TrackFields artists={artists} track={t} />
-                          <button className="btn btn-primary btn-sm">Guardar</button>
+                          <SubmitButton className="btn btn-primary btn-sm" pendingText="Guardando…">Guardar</SubmitButton>
                         </form>
                         <form action={deleteTrack} className="mt-2">
                           <input type="hidden" name="id" value={t.id} />
@@ -142,7 +143,7 @@ export default async function CatalogPage() {
           <form action={createTrack} className="box grid gap-3 p-4 md:grid-cols-4">
             <TrackFields artists={artists} />
             <div>
-              <button className="btn btn-primary">Agregar track</button>
+              <SubmitButton className="btn btn-primary" pendingText="Agregando…">Agregar track</SubmitButton>
             </div>
           </form>
         )}
@@ -163,7 +164,7 @@ export default async function CatalogPage() {
             País
             <input name="country" placeholder="AR, CL, PR" className="input" />
           </label>
-          <button className="btn">Agregar artista</button>
+          <SubmitButton className="btn" pendingText="Agregando…">Agregar artista</SubmitButton>
         </form>
       </Section>
     </>

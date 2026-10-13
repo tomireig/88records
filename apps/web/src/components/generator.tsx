@@ -3,7 +3,7 @@
 import type { GenerationKind } from "@88/ai";
 import { useActionState, useState } from "react";
 import { generateAction, type GenerateState } from "@/app/actions/ai";
-import { KIND_LABELS } from "@/lib/ai-kinds";
+import { KIND_LABELS, providerLabel } from "@/lib/ai-kinds";
 
 export interface TrackOption {
   id: string;
@@ -154,7 +154,7 @@ export function Generator({
         ) : (
           <p className="text-sm text-mute">{pending ? "Pensando…" : "Lo que generes aparece acá y queda guardado en el historial."}</p>
         )}
-        {state.provider && <p className="mt-3 text-[10px] uppercase tracking-widest text-mute">{state.provider}</p>}
+        {state.provider && <p className="mt-3 text-[10px] uppercase tracking-widest text-mute">{providerLabel(state.provider)}</p>}
       </div>
     </div>
   );

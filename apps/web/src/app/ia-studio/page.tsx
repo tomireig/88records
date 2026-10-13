@@ -2,7 +2,7 @@ import type { GenerationKind } from "@88/ai";
 import { db } from "@88/db";
 import { Generator } from "@/components/generator";
 import { Empty, PageHeader, Section } from "@/components/ui";
-import { KIND_LABELS } from "@/lib/ai-kinds";
+import { KIND_LABELS, providerLabel } from "@/lib/ai-kinds";
 
 export const dynamic = "force-dynamic";
 
@@ -28,9 +28,8 @@ export default async function AIStudioPage() {
       <PageHeader tag="IA Studio" title="Generar" />
 
       {!hasKey && (
-        <p className="mb-6 border border-orange px-4 py-3 text-sm">
-          No hay <code>ANTHROPIC_API_KEY</code> en el <code>.env</code>, así que se usan plantillas locales. Con la key, genera
-          Claude.
+        <p className="mb-6 border-l-4 border-ultra pl-4 text-sm text-mute">
+          Modo plantillas: los textos salen de las plantillas del sello. Con la IA conectada, salen a medida de cada track.
         </p>
       )}
 
@@ -57,7 +56,7 @@ export default async function AIStudioPage() {
                       <span className="ml-auto text-xs tabular-nums text-mute">{dt.format(h.createdAt)}</span>
                     </summary>
                     <pre className="mt-2 whitespace-pre-wrap font-sans text-sm">{h.output}</pre>
-                    <p className="mt-2 text-[10px] uppercase tracking-widest text-mute">{h.provider}</p>
+                    <p className="mt-2 text-[10px] uppercase tracking-widest text-mute">{providerLabel(h.provider)}</p>
                   </details>
                 </li>
               );

@@ -44,7 +44,7 @@ export function Nav() {
           </Link>
         ))}
       </nav>
-      <form action={logout} className="hidden md:mt-auto md:block md:px-6 md:py-6">
+      <form action={logout} className="px-4 pb-3 md:mt-auto md:px-6 md:py-6">
         <button className="text-[10px] font-bold uppercase tracking-widest text-paper/50 hover:text-paper">Salir</button>
       </form>
     </aside>
