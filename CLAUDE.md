@@ -82,7 +82,9 @@ Toma material del sello (sets, videos de artistas), detecta los mejores momentos
 4. OAuth TikTok, cuentas, publicaciones, scheduler, calendario
 5. Analytics, templates, hooks con IA, seed, README, producción
 
-**Estado actual:** el pipeline de publicación multi-cuenta está en curso. Antes de seguir, revisá el repo y confirmá qué etapas están terminadas y cuáles no.
+**Estado actual:** el pipeline de publicación multi-cuenta está en curso, pero su código todavía no está en este repo. Antes de seguir, revisá el repo y confirmá qué etapas están terminadas y cuáles no.
+
+**Marketing OS™ (13/10/2026):** ya migrado al monorepo. Los nueve módulos corren en `apps/web` con datos en Postgres (`packages/db`), e IA Studio usa `packages/ai`. Sin auth todavía y sin Redis ni MinIO en el compose: se suman con el pipeline de video. Para correr Postgres sin Docker: `pnpm db:local`.
 
 Antecedente: una versión local en Node que replicaba content.ready (videos cortos sincronizados al beat, Whisper, dirección con Ollama, stock de Pexels). Hay ideas para reutilizar ahí.
 

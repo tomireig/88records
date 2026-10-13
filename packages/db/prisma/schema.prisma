@@ -1,0 +1,186 @@
+// 88RECORDS® Platform · Marketing OS™
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Artist {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  country   String?
+  genre     String?
+  instagram String?
+  tiktok    String?
+  createdAt DateTime @default(now())
+
+  tracks Track[]
+}
+
+enum TrackStatus {
+  DEMO
+  MIX
+  MASTER
+  READY
+  RELEASED
+}
+
+model Track {
+  id          String      @id @default(cuid())
+  title       String
+  artistId    String
+  artist      Artist      @relation(fields: [artistId], references: [id], onDelete: Cascade)
+  status      TrackStatus @default(DEMO)
+  genre       String?
+  mood        String?
+  bpm         Int?
+  musicalKey  String?
+  durationSec Int?
+  isrc        String?
+  releaseDate DateTime?
+  notes       String?
+  createdAt   DateTime    @default(now())
+
+  campaigns Campaign[]
+  pieces    ContentPiece[]
+  pitches   Pitch[]
+}
+
+enum CampaignStatus {
+  PLANNING
+  ACTIVE
+  DONE
+}
+
+model Campaign {
+  id          String         @id @default(cuid())
+  name        String
+  trackId     String?
+  track       Track?         @relation(fields: [trackId], references: [id], onDelete: SetNull)
+  releaseDate DateTime
+  status      CampaignStatus @default(PLANNING)
+  createdAt   DateTime       @default(now())
+
+  tasks  CampaignTask[]
+  pieces ContentPiece[]
+}
+
+model CampaignTask {
+  id         String    @id @default(cuid())
+  campaignId String
+  campaign   Campaign  @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  offsetDays Int
+  title      String
+  detail     String?
+  dueDate    DateTime
+  doneAt     DateTime?
+
+  @@index([dueDate])
+}
+
+enum Platform {
+  TIKTOK
+  INSTAGRAM
+  YOUTUBE
+}
+
+enum ContentFormat {
+  HOOK_REVEAL
+  STORYTELLING
+  BTS
+  LYRIC
+  CHALLENGE
+  DUET
+  VISUALIZER
+}
+
+enum ContentStage {
+  IDEA
+  SCRIPT
+  RECORDED
+  EDITED
+  PUBLISHED
+}
+
+model ContentPiece {
+  id           String        @id @default(cuid())
+  title        String
+  platform     Platform
+  format       ContentFormat
+  stage        ContentStage  @default(IDEA)
+  hook         String?
+  notes        String?
+  scheduledFor DateTime?
+  publishedAt  DateTime?
+  campaignId   String?
+  campaign     Campaign?     @relation(fields: [campaignId], references: [id], onDelete: SetNull)
+  trackId      String?
+  track        Track?        @relation(fields: [trackId], references: [id], onDelete: SetNull)
+  views        Int           @default(0)
+  likes        Int           @default(0)
+  comments     Int           @default(0)
+  shares       Int           @default(0)
+  saves        Int           @default(0)
+  createdAt    DateTime      @default(now())
+}
+
+model Curator {
+  id        String   @id @default(cuid())
+  name      String
+  playlist  String
+  url       String?
+  genres    String[]
+  followers Int?
+  email     String?
+  instagram String?
+  language  String   @default("es")
+  notes     String?
+  createdAt DateTime @default(now())
+
+  pitches Pitch[]
+}
+
+enum PitchStage {
+  TO_SEND
+  SENT
+  FOLLOW_UP
+  ACCEPTED
+  REJECTED
+}
+
+model Pitch {
+  id         String     @id @default(cuid())
+  curatorId  String
+  curator    Curator    @relation(fields: [curatorId], references: [id], onDelete: Cascade)
+  trackId    String
+  track      Track      @relation(fields: [trackId], references: [id], onDelete: Cascade)
+  stage      PitchStage @default(TO_SEND)
+  message    String?
+  sentAt     DateTime?
+  followUpAt DateTime?
+  costUsd    Float      @default(0)
+  adds       Int        @default(0)
+  createdAt  DateTime   @default(now())
+}
+
+model FanSnapshot {
+  id               String   @id @default(cuid())
+  month            DateTime @unique
+  monthlyListeners Int
+  followers        Int      @default(0)
+  emailSubs        Int      @default(0)
+  superfans        Int      @default(0)
+  createdAt        DateTime @default(now())
+}
+
+model AiGeneration {
+  id        String   @id @default(cuid())
+  kind      String
+  prompt    String
+  output    String
+  provider  String
+  createdAt DateTime @default(now())
+}
