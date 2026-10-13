@@ -103,3 +103,25 @@ Unir las dos piezas en este monorepo:
 - Cambios chicos y por etapa. Si algo de la arquitectura no cierra, preguntar antes de rehacerlo
 - Nada de secretos en el código. Todo por variables de entorno, con `.env.example` actualizado
 - Textos de UI naturales, en rioplatense, que no suenen a IA
+
+## Skills y agentes del proyecto
+
+Instalados como markdown en `.claude/skills` y `.claude/agents` (sin hooks ni scripts). Fuentes y licencias en `.claude/licenses/`.
+
+**Contexto de marca:** `.agents/product-marketing.md`. Todas las skills de marketing lo leen primero. Si tiene huecos marcados "A COMPLETAR", no inventar: preguntarle a Tomi.
+
+**Cuándo usar cada cosa:**
+- Textos que lee alguien de afuera (UI, captions, mails, pitches, bios, landing): `ai-copywriter`, después adaptado a rioplatense con voseo. Sus reglas anti-IA aplican también a los prompts de `packages/ai`.
+- Lanzamientos y campañas: `launch`, `content-strategy`, `social`, `video`.
+- Pitching a curadores y prensa: `public-relations`, `cold-email`, `influencer-marketing`.
+- Fans, mails y superfans: `emails`, `community-marketing`, `referrals`, `lead-magnets`.
+- Métricas y experimentos: `analytics`, `ab-testing`, `attribution`.
+- Web y SEO del sello: `seo-audit`, `ai-seo`, `schema`, `site-architecture`, `cro`.
+- Ads pagos: `ads`, `ad-creative`.
+- Código: `ponytail` (la solución más chica que funcione). Para revisar: `ponytail-review`.
+- Tareas largas y separables: subagentes `content-creator`, `growth-hacker`, `seo-specialist`, `proposal-strategist` (propuestas a marcas y sponsors), `carousel-growth-engine`.
+
+**Reglas:**
+- Las skills están en inglés y pensadas para SaaS. Adaptar al contexto de un sello de música, y todo lo que se entrega va en rioplatense.
+- `carousel-growth-engine` puede publicar en TikTok e Instagram con APIs externas. Nunca publicar ni gastar sin que Tomi lo confirme.
+- Las skills que nombran herramientas pagas o "partners" son sugerencias, no requisitos.
