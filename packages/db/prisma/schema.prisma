@@ -86,6 +86,13 @@ model Release {
   videos  Video[]
 }
 
+// Latido del worker: el panel avisa si las publicaciones no van a salir porque está apagado.
+model WorkerHeartbeat {
+  id     String   @id
+  seenAt DateTime
+  host   String?
+}
+
 // ─── Bandeja de aprobación ──────────────────────────────────────────────────
 // Todos los motores proponen acciones; nada se ejecuta sin aprobación.
 

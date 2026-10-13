@@ -5,10 +5,10 @@ import { readFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
-/** Duración, tamaño, hash y miniatura de un video recién subido. */
-export async function processVideo(videoId: string, finalAttempt: boolean): Promise<void> {
+/** Duración, tamaño, hash y miniatura de un video recién subido. False si ya no existe o ya estaba listo. */
+export async function processVideo(videoId: string, finalAttempt: boolean): Promise<boolean> {
   const video = await db.video.findUnique({ where: { id: videoId } });
-  if (!video || video.status === "ready") return;
+  if (!video || video.status === "ready") return false;
 
   const s = storage();
   const local = await s.toLocalFile(video.storageKey);
@@ -32,6 +32,7 @@ export async function processVideo(videoId: string, finalAttempt: boolean): Prom
         thumbnailKey: thumbKey,
       },
     });
+    return true;
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
     if (finalAttempt) {
@@ -39,7 +40,7 @@ export async function processVideo(videoId: string, finalAttempt: boolean): Prom
         where: { id: video.id },
         data: { status: "failed", error: `No se pudo leer el video: ${message.slice(0, 300)}` },
       });
-      return;
+      return false;
     }
     throw err;
   } finally {

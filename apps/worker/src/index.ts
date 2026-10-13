@@ -17,8 +17,7 @@ const log = (...args: unknown[]) => console.log(new Date().toISOString(), ...arg
 await b.work<Payload<typeof JOBS.libraryProcess>>(JOBS.libraryProcess, { localConcurrency: 2 }, async ([job]) => {
   if (!job) return;
   const limit = QUEUE_OPTIONS[JOBS.libraryProcess].retryLimit ?? 0;
-  await processVideo(job.data.videoId, job.retryCount >= limit);
-  log("video procesado", job.data.videoId);
+  if (await processVideo(job.data.videoId, job.retryCount >= limit)) log("video procesado", job.data.videoId);
 });
 
 await b.work<Payload<typeof JOBS.tiktokPublish>>(JOBS.tiktokPublish, { localConcurrency: 2 }, async ([job]) => {
@@ -42,12 +41,22 @@ await b.work(JOBS.tiktokRefresh, async () => {
 });
 await b.schedule(JOBS.tiktokRefresh, "*/30 * * * *");
 
+// Latido para que el panel sepa que hay alguien publicando.
+const { hostname } = await import("node:os");
+const beat = () =>
+  db.workerHeartbeat
+    .upsert({ where: { id: "main" }, update: { seenAt: new Date(), host: hostname() }, create: { id: "main", seenAt: new Date(), host: hostname() } })
+    .catch((err) => console.error("[latido]", err.message));
+await beat();
+const beatTimer = setInterval(beat, 30_000);
+
 log("Worker andando. Ctrl+C para cortar.");
 
 let stopping = false;
 async function shutdown() {
   if (stopping) return;
   stopping = true;
+  clearInterval(beatTimer);
   log("Cortando: espero que terminen los jobs en curso…");
   await b.stop({ graceful: true, timeout: 60_000 });
   await db.$disconnect();

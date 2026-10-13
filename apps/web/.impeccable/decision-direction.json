@@ -1,0 +1,125 @@
+{
+  "title": "Elegí el mundo visual del panel",
+  "question": "La tirada asignó \"Test pressing\". Quedátela, tomá una alternativa o volvé a tirar.",
+  "options": [
+    {
+      "id": "assigned",
+      "label": "Test pressing",
+      "kicker": "THE ROLL",
+      "lineage": "Acetatos y test pressings de un sello: laca negra, dead wax grabado, etiqueta central de color",
+      "thesis": "Cada cuenta es un disco y cada publicación un corte grabado con su número de matriz.",
+      "palette": ["#0B0B0F", "#16161C", "#FF4D00", "#1E1EE6", "#E9E9EE", "#7C7C88"],
+      "materials": ["laca negra con brillo", "grabado fino de matriz", "etiqueta central de color"],
+      "viewport": "Riel de navegación a la izquierda; calendario semanal con una fila por cuenta, cada fila abre con la etiqueta central del disco en el color de la cuenta; biblioteca a la derecha para arrastrar.",
+      "risk": "Si el giro de la etiqueta se usa de adorno en vez de solo para 'publicando', se vuelve cotillón.",
+      "raised": [
+        { "from": "challenger-specimen", "raise": "Contraste de escala: un solo número grande por vista (publicaciones de hoy) y todo lo demás chico en mono." },
+        { "from": "challenger-warm-app", "raise": "El naranja aparece solo donde se puede hacer algo; el resto del color es estado." },
+        { "from": "challenger-goods", "raise": "Lo que ya pasó o está caído se imprime desaturado: cuentas caídas y publicaciones viejas en gris." },
+        { "from": "challenger-timetable", "raise": "El estado es una marca en una celda fija: llena programado, hueca propuesto, tachada cancelado." },
+        { "from": "challenger-rail", "raise": "Todas las líneas a un pixel de dispositivo exacto; ninguna regla gruesa." }
+      ]
+    },
+    {
+      "id": "model-pick",
+      "label": "Timetable de line-up",
+      "kicker": "IMPECCABLE’S PICK",
+      "lineage": "Timetables de fiestas y festivales: escenarios en columnas, sets por horario",
+      "thesis": "La semana se lee como el horario de una fiesta: cada cuenta es un escenario, cada publicación un set.",
+      "palette": ["#08080C", "#121218", "#FF4D00", "#1E1EE6", "#F2F2F5", "#5E5E6A"],
+      "materials": ["bloques de set con borde de 1px", "horas en mono tabular", "brillo detrás del set en curso"],
+      "viewport": "Barra superior con la semana; escenarios (cuentas) como columnas verticales con su avatar arriba, horas en el eje vertical, biblioteca abajo como bandeja de sets por asignar.",
+      "risk": "Es la dirección más cercana a lo que cualquiera esperaría de un calendario oscuro: familiar, y con 15 cuentas las columnas se angostan."
+    },
+    {
+      "id": "challenger-crouwel",
+      "label": "Grilla de Crouwel",
+      "verdict": "competitive",
+      "lineage": "Especímenes tipográficos sobre grilla visible de Wim Crouwel",
+      "thesis": "La grilla del calendario queda a la vista como armazón: cada celda es una franja horaria real.",
+      "palette": ["#0A0A10", "#1E1EE6", "#2A2A40", "#FF4D00", "#F0F0F5"],
+      "materials": ["grilla de construcción visible", "cifras grandes construidas sobre la grilla", "una diagonal como única licencia"],
+      "viewport": "Grilla semanal a pantalla completa con las líneas de construcción visibles, números de día enormes armados por celdas, publicaciones encajadas en celdas.",
+      "case": "Funde bien: el calendario ya es una grilla y la marca venía de una grilla industrial; pierde en identificación del público, que no vive en la tipografía suiza.",
+      "risk": "Con 15 cuentas la grilla visible se vuelve ruido si no se baja el contraste de las líneas.",
+      "hero": "https://impeccable.style/worlds/cards/crouwel-grid-specimen-hero.webp",
+      "board": "https://impeccable.style/worlds/cards/crouwel-grid-specimen.webp"
+    },
+    {
+      "id": "challenger-specimen",
+      "label": "Espécimen de fuente variable",
+      "verdict": "declined",
+      "lineage": "Especímenes interactivos de fuentes variables",
+      "thesis": "Una letra gigante que cambia de peso con un slider.",
+      "palette": ["#F7F7F2", "#111111", "#FF4D00"],
+      "materials": ["papel claro", "letra display gigante"],
+      "viewport": "Un glifo enorme y una grilla de glifos.",
+      "case": "Funde mal: el panel no trata de letras y pierde en los dos ejes.",
+      "risk": "Pantalla clara contra una dirección pedida oscura.",
+      "kept": "Jerarquía solo por contraste de escala."
+    },
+    {
+      "id": "challenger-warm-app",
+      "label": "App de consumo cálida",
+      "verdict": "declined",
+      "lineage": "Apps de consumo con tarjetas redondeadas y fondo cálido",
+      "thesis": "Tarjetas amables con un solo color de acción.",
+      "palette": ["#F6EFE6", "#FFFFFF", "#FF4D00"],
+      "materials": ["tarjetas redondeadas", "barra inferior"],
+      "viewport": "Columna de tarjetas con barra inferior.",
+      "case": "Funde mal: choca con la base oscura pedida y con la densidad que necesita un operador de 15 cuentas.",
+      "risk": "Tarjetas dentro de tarjetas, prohibido por el brief.",
+      "kept": "Color de acción reservado a lo que se puede tocar."
+    },
+    {
+      "id": "challenger-goods",
+      "label": "Catálogo de personajes",
+      "verdict": "declined",
+      "lineage": "Catálogos de mascotas en grilla pastel",
+      "thesis": "Un elenco ordenado por popularidad.",
+      "palette": ["#FCE4EC", "#E3F2FD", "#FFFFFF"],
+      "materials": ["pastel", "contorno blanco"],
+      "viewport": "Grilla de personajes con fichas.",
+      "case": "Funde mal en los dos ejes.",
+      "risk": "Infantiliza un panel de trabajo.",
+      "kept": "Lo retirado se imprime en gris."
+    },
+    {
+      "id": "challenger-timetable",
+      "label": "Rack de horarios inclinado",
+      "verdict": "declined",
+      "lineage": "Horarios de aerolínea de bolsillo sobre mesa de luz",
+      "thesis": "Placas de vidrio inclinadas con un solo tamaño de letra.",
+      "palette": ["#DAA520", "#2F3A40", "#E34234", "#0B6E4F"],
+      "materials": ["vidrio tintado", "mesa de luz"],
+      "viewport": "Rack de placas inclinadas a 11 grados.",
+      "case": "Funde mal: la inclinación le quita legibilidad a un calendario.",
+      "risk": "Disfraz de objeto sobre una pantalla de trabajo.",
+      "kept": "Estado como marca en celda fija."
+    },
+    {
+      "id": "challenger-rail",
+      "label": "Edición con riel central",
+      "verdict": "declined",
+      "lineage": "Ediciones de referencia con riel de claves",
+      "thesis": "Dos columnas alrededor de un riel de claves.",
+      "palette": ["#1A1A1A", "#E8E2D4", "#B03A2E"],
+      "materials": ["papel hueso", "reglado a un pixel"],
+      "viewport": "Bloque de texto chico en margen ancho.",
+      "case": "Funde mal: es un mundo de lectura, no de operación.",
+      "risk": "Pantalla clara y de lectura.",
+      "kept": "Reglas a un pixel exacto."
+    }
+  ],
+  "reroll": { "registers": ["safer", "bolder"] },
+  "canon": true,
+  "canonCard": {
+    "label": "El estándar de la categoría",
+    "thesis": "Un programador de redes oscuro como los que ya existen, hecho impecable.",
+    "palette": ["#0F1115", "#1A1D23", "#FF4D00", "#E6E8EB"],
+    "materials": ["tarjetas", "calendario mensual", "barra lateral"],
+    "viewport": "Barra lateral, calendario mensual con miniaturas, botón de crear arriba a la derecha.",
+    "risk": "Indistinguible de Later o Buffer en modo oscuro, por diseño."
+  },
+  "steer": true
+}

@@ -10,3 +10,8 @@ next-env.d.ts
 .storage
 .vercel
 coverage
+
+# Impeccable: capturas y servidores de decisión locales
+**/.impeccable/review
+**/.impeccable/questions
+**/.impeccable/mocks
