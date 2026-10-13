@@ -1,0 +1,30 @@
+{
+  "name": "@88/core",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./crypto": "./src/crypto.ts",
+    "./storage": "./src/storage/index.ts",
+    "./queue": "./src/queue.ts",
+    "./time": "./src/time.ts",
+    "./scheduling": "./src/scheduling.ts",
+    "./env": "./src/env.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "3.1151.0",
+    "@aws-sdk/s3-request-presigner": "3.1151.0",
+    "@date-fns/tz": "1.5.0",
+    "date-fns": "4.4.0",
+    "pg-boss": "12.35.1"
+  },
+  "devDependencies": {
+    "@types/node": "22.18.0",
+    "typescript": "5.9.3",
+    "vitest": "4.1.11"
+  }
+}

@@ -1,0 +1,265 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// ─── Tenancy ────────────────────────────────────────────────────────────────
+// Todo cuelga de Organization → Artist → Release, aunque hoy la única sea 88RECORDS.
+
+model Organization {
+  id        String   @id @default(cuid())
+  name      String
+  slug      String   @unique
+  timezone  String   @default("America/Argentina/Buenos_Aires")
+  createdAt DateTime @default(now())
+
+  memberships    Membership[]
+  artists        Artist[]
+  releases       Release[]
+  actions        Action[]
+  tiktokAccounts TikTokAccount[]
+  videos         Video[]
+  tiktokPosts    TikTokPost[]
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  // id del usuario en Supabase Auth. Null en modo local.
+  authId    String?  @unique
+  createdAt DateTime @default(now())
+
+  memberships Membership[]
+}
+
+enum Role {
+  owner
+  admin
+  member
+}
+
+model Membership {
+  id             String       @id @default(cuid())
+  userId         String
+  organizationId String
+  role           Role         @default(member)
+  createdAt      DateTime     @default(now())
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, organizationId])
+}
+
+model Artist {
+  id             String       @id @default(cuid())
+  organizationId String
+  name           String
+  slug           String
+  createdAt      DateTime     @default(now())
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  releases       Release[]
+  tiktokAccounts TikTokAccount[]
+  videos         Video[]
+  actions        Action[]
+
+  @@unique([organizationId, slug])
+}
+
+model Release {
+  id             String       @id @default(cuid())
+  organizationId String
+  artistId       String
+  title          String
+  releaseDate    DateTime?
+  createdAt      DateTime     @default(now())
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  artist         Artist       @relation(fields: [artistId], references: [id], onDelete: Cascade)
+
+  actions Action[]
+  videos  Video[]
+}
+
+// ─── Bandeja de aprobación ──────────────────────────────────────────────────
+// Todos los motores proponen acciones; nada se ejecuta sin aprobación.
+
+enum ActionStatus {
+  proposed
+  approved
+  executing
+  done
+  failed
+  discarded
+}
+
+model Action {
+  id             String       @id @default(cuid())
+  organizationId String
+  artistId       String?
+  releaseId      String?
+  // ej. "tiktok.publish"
+  type           String
+  payload        Json
+  preview        Json?
+  reason         String
+  status         ActionStatus @default(proposed)
+  scheduledFor   DateTime?
+  result         Json?
+  decidedById    String?
+  decidedAt      DateTime?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  artist         Artist?      @relation(fields: [artistId], references: [id], onDelete: SetNull)
+  release        Release?     @relation(fields: [releaseId], references: [id], onDelete: SetNull)
+
+  tiktokPost TikTokPost?
+
+  @@index([organizationId, status, type])
+}
+
+// ─── TikTok ─────────────────────────────────────────────────────────────────
+
+enum ConnectionStatus {
+  active
+  broken
+}
+
+model TikTokAccount {
+  id                    String           @id @default(cuid())
+  organizationId        String
+  artistId              String?
+  openId                String
+  displayName           String
+  avatarUrl             String?
+  // Tokens cifrados con AES-256-GCM (TOKEN_ENCRYPTION_KEY). Nunca en claro.
+  accessTokenEnc        String
+  refreshTokenEnc       String
+  accessTokenExpiresAt  DateTime
+  refreshTokenExpiresAt DateTime
+  scopes                String[]
+  status                ConnectionStatus @default(active)
+  lastError             String?
+  // Reglas del calendario
+  color                 String           @default("#FF4D00")
+  preferredSlots        String[]         @default(["12:30", "19:00", "21:30"])
+  maxPostsPerDay        Int              @default(3)
+  captionTemplate       String?
+  hashtags              String[]         @default([])
+  connectedById         String?
+  createdAt             DateTime         @default(now())
+  updatedAt             DateTime         @updatedAt
+  organization          Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  artist                Artist?          @relation(fields: [artistId], references: [id], onDelete: SetNull)
+
+  posts TikTokPost[]
+
+  @@unique([organizationId, openId])
+}
+
+enum VideoStatus {
+  uploading
+  processing
+  ready
+  failed
+}
+
+model Video {
+  id             String       @id @default(cuid())
+  organizationId String
+  artistId       String?
+  releaseId      String?
+  title          String
+  storageKey     String       @unique
+  thumbnailKey   String?
+  mimeType       String
+  sizeBytes      BigInt?
+  durationSec    Float?
+  width          Int?
+  height         Int?
+  sha256         String?
+  status         VideoStatus  @default(uploading)
+  error          String?
+  // "upload" o "engine" (motor de contenido, etapa 3)
+  source         String       @default("upload")
+  uploadedById   String?
+  createdAt      DateTime     @default(now())
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  artist         Artist?      @relation(fields: [artistId], references: [id], onDelete: SetNull)
+  release        Release?     @relation(fields: [releaseId], references: [id], onDelete: SetNull)
+
+  tiktokPosts TikTokPost[]
+
+  @@index([organizationId, sha256])
+}
+
+enum PostMode {
+  direct
+  draft
+}
+
+enum PostStatus {
+  scheduled
+  publishing
+  processing
+  in_drafts
+  published
+  failed
+  canceled
+}
+
+model TikTokPost {
+  id              String        @id @default(cuid())
+  organizationId  String
+  accountId       String
+  videoId         String
+  actionId        String?       @unique
+  // Elecciones de la pantalla de publicación: el job publica exactamente esto.
+  // En modo borrador la privacidad y los permisos se eligen en la app de TikTok: quedan null/true.
+  caption         String
+  privacyLevel    String?
+  disableComment  Boolean
+  disableDuet     Boolean
+  disableStitch   Boolean
+  brandOrganic    Boolean       @default(false)
+  brandContent    Boolean       @default(false)
+  mode            PostMode
+  creatorNickname String
+  scheduledFor    DateTime
+  status          PostStatus    @default(scheduled)
+  publishId       String?
+  publicPostId    String?
+  failReason      String?
+  attempts        Int           @default(0)
+  publishedAt     DateTime?
+  createdById     String?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  organization    Organization  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  account         TikTokAccount @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  video           Video         @relation(fields: [videoId], references: [id], onDelete: Restrict)
+  action          Action?       @relation(fields: [actionId], references: [id], onDelete: SetNull)
+
+  events TikTokPostEvent[]
+
+  @@index([organizationId, scheduledFor])
+  @@index([accountId, scheduledFor])
+  @@index([status, scheduledFor])
+}
+
+model TikTokPostEvent {
+  id      String     @id @default(cuid())
+  postId  String
+  at      DateTime   @default(now())
+  status  PostStatus
+  message String?
+  post    TikTokPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@index([postId, at])
+}

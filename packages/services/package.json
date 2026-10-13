@@ -1,0 +1,23 @@
+{
+  "name": "@88/services",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./tiktok": "./src/tiktok/index.ts",
+    "./actions": "./src/actions.ts",
+    "./library": "./src/library.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@88/connectors": "workspace:*",
+    "@88/core": "workspace:*",
+    "@88/db": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "22.18.0",
+    "typescript": "5.9.3"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "name": "@88/worker",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "start": "tsx src/index.ts",
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@88/connectors": "workspace:*",
+    "@88/core": "workspace:*",
+    "@88/db": "workspace:*",
+    "@88/services": "workspace:*",
+    "@88/video": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "22.18.0",
+    "tsx": "4.20.5",
+    "typescript": "5.9.3",
+    "vitest": "4.1.11"
+  }
+}
