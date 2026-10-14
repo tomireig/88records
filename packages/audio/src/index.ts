@@ -1,5 +1,7 @@
 // Análisis de un tema: todo lo que el motor de contenido necesita para cortar videos.
 import { analyzeFrames, decode, SR } from "./dsp";
+
+export { decode };
 import { detectKey, type KeyResult } from "./key";
 import { downbeatPhase, estimateTempo, trackBeats } from "./rhythm";
 import { CURVE_STEP, detectChorus, detectDrops, energyCurve, pickFragments, type Drop, type Fragment, type Section } from "./structure";

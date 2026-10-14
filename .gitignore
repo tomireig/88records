@@ -15,3 +15,6 @@ coverage
 **/.impeccable/review
 **/.impeccable/questions
 **/.impeccable/mocks
+
+# Modelos de IA locales (Whisper)
+.models

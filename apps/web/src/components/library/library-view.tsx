@@ -122,7 +122,7 @@ function Library({ tz, videos, accounts, artists }: { tz: string; videos: VideoD
         <div className="grid flex-1 place-items-center p-8">
           <button
             onClick={uploader.pick}
-            className="flex max-w-md flex-col items-center gap-3 rounded-xl border border-dashed border-line-strong px-10 py-14 text-center hover:border-orange/50"
+            className="flex max-w-md flex-col items-center gap-3 rounded-lg border border-dashed border-line-strong px-10 py-14 text-center hover:border-orange/50"
           >
             <UploadCloud className="size-7 text-orange" />
             <span className="text-base font-medium">Subí los primeros videos</span>
@@ -203,7 +203,7 @@ function VideoCard({ video: v, onSchedule, onEdit }: { video: VideoDTO; onSchedu
           </div>
         )}
         {v.status === "failed" && (
-          <div className="absolute inset-0 grid place-items-center bg-bad/10 p-3 text-center text-xs text-[#ffb3b3]">{v.error}</div>
+          <div className="absolute inset-0 grid place-items-center bg-bad/10 p-3 text-center text-xs text-bad-fg">{v.error}</div>
         )}
         {v.status === "ready" && (
           <span className="absolute right-1.5 bottom-1.5 rounded bg-black/60 px-1.5 py-0.5 font-mono text-[11px] text-white backdrop-blur tabular">

@@ -9,6 +9,8 @@ onlyBuiltDependencies:
   - esbuild
   - sharp
   - ffmpeg-static
+  - onnxruntime-node
+  - protobufjs
   - "@embedded-postgres/windows-x64"
   - "@embedded-postgres/darwin-arm64"
   - "@embedded-postgres/darwin-x64"

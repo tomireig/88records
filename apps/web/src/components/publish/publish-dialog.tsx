@@ -157,7 +157,7 @@ export function PublishDialog({
             </div>
 
             {loadError ? (
-              <div className="m-5 flex gap-2.5 rounded-md border border-bad/30 bg-bad/[0.07] p-3 text-[13px] text-[#ffb3b3]">
+              <div className="m-5 flex gap-2.5 rounded-md border border-bad/30 bg-bad/[0.07] p-3 text-[13px] text-bad-fg">
                 <AlertTriangle className="mt-0.5 size-4 shrink-0" />
                 <div>
                   <p className="font-medium">Esta cuenta no puede publicar ahora.</p>
@@ -173,7 +173,7 @@ export function PublishDialog({
             ) : (
               <div className="space-y-6 p-5">
                 {ctx.duplicates.length > 0 && (
-                  <div className="flex gap-2.5 rounded-md border border-warn/30 bg-warn/[0.06] p-3 text-[13px] text-[#ffd48a]">
+                  <div className="flex gap-2.5 rounded-md border border-warn/30 bg-warn/[0.06] p-3 text-[13px] text-warn-fg">
                     <Copy className="mt-0.5 size-4 shrink-0" />
                     <p>
                       Este mismo archivo ya está en <strong className="font-medium">{ctx.duplicates.map((d) => d.displayName).join(", ")}</strong>. TikTok

@@ -66,7 +66,7 @@ export function PostDetail({ postId, tz, onClose }: { postId: string | null; tz:
           </div>
 
           {post.failReason && (
-            <div className="bg-bad/[0.06] px-5 py-3 text-[13px] text-[#ffb3b3]">{post.failReason}</div>
+            <div className="bg-bad/[0.06] px-5 py-3 text-[13px] text-bad-fg">{post.failReason}</div>
           )}
 
           <dl className="grid grid-cols-[120px_1fr] gap-x-4 gap-y-2 px-5 py-4 text-[13px]">

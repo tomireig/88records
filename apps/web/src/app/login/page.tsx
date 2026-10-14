@@ -15,7 +15,7 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
   return (
     <main className="relative grid min-h-dvh place-items-center overflow-hidden px-4">
       <LiveBackground />
-      <div className="relative w-full max-w-[380px] rounded-xl border border-line-strong bg-ink-1/70 p-7 shadow-pop backdrop-blur-2xl">
+      <div className="relative w-full max-w-[380px] rounded-lg border border-line-strong bg-ink-1/70 p-7 shadow-pop backdrop-blur-2xl">
         <h1 className="text-2xl font-bold tracking-[-0.03em]">
           88RECORDS<sup className="ml-0.5 text-xs font-medium text-fg-2">®</sup>
         </h1>

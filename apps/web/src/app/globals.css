@@ -130,3 +130,9 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   filter: invert(0.75);
   cursor: pointer;
 }
+
+@theme {
+  /* Texto sobre los avisos de error y advertencia (tinte claro del mismo tono). */
+  --color-bad-fg: #ffb3b3;
+  --color-warn-fg: #ffd48a;
+}

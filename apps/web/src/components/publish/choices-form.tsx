@@ -132,7 +132,7 @@ export function ChoicesForm({
 function Check2({ checked, onChange, label, hint }: { checked: boolean; onChange: (v: boolean) => void; label: string; hint: string }) {
   return (
     <label className="flex cursor-pointer items-start gap-2.5 rounded-md px-1 py-1.5 hover:bg-white/[0.03]">
-      <input type="checkbox" checked={checked} onChange={(e) => onChange(e.target.checked)} className="mt-0.5 size-4 accent-[#ff4d00]" />
+      <input type="checkbox" checked={checked} onChange={(e) => onChange(e.target.checked)} className="mt-0.5 size-4 accent-[#1e1ee6]" />
       <span>
         <span className="block text-[13px] text-fg">{label}</span>
         <span className="block text-xs text-fg-3">{hint}</span>

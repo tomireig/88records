@@ -287,7 +287,7 @@ function Board({ tz, view, start, anchorDay, days, accounts, posts: initialPosts
           )}
         </section>
 
-        <aside className="sticky top-0 hidden h-dvh w-[264px] shrink-0 flex-col border-l border-line bg-ink-1/60 xl:flex">
+        <aside className="hidden w-[264px] shrink-0 flex-col border-l border-line bg-ink-1/60 xl:flex">
           <DropZone className="flex min-h-0 flex-1 flex-col">
             <div className="flex items-center justify-between border-b border-line px-4 py-3.5">
               <h2 className="text-[13px] font-medium">Biblioteca</h2>

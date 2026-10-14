@@ -86,7 +86,7 @@ export function InboxView({
 
       <div className="mx-auto max-w-4xl p-4 md:p-6">
         {proposals.length === 0 ? (
-          <div className="rounded-xl border border-dashed border-line-strong px-6 py-14 text-center">
+          <div className="rounded-lg border border-dashed border-line-strong px-6 py-14 text-center">
             <h2 className="text-base font-medium">Nada para aprobar</h2>
             <p className="mx-auto mt-2 max-w-md text-sm text-fg-2">
               Las propuestas aparecen acá cuando usás «Autollenar semana» en el{" "}

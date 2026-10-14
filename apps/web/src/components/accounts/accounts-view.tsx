@@ -64,7 +64,7 @@ export function AccountsView({
 
       <div className="mx-auto max-w-5xl space-y-10 p-4 md:p-6">
         {accounts.length === 0 ? (
-          <div className="rounded-xl border border-dashed border-line-strong px-6 py-14 text-center">
+          <div className="rounded-lg border border-dashed border-line-strong px-6 py-14 text-center">
             <h2 className="text-base font-medium">Todavía no hay cuentas</h2>
             <p className="mx-auto mt-2 max-w-md text-sm text-fg-2">
               Tocá «Conectar cuenta»: se abre el login oficial de TikTok, iniciás sesión con la cuenta del artista y autorizás. Repetilo por cada cuenta.
@@ -93,7 +93,7 @@ export function AccountsView({
                       <span>·</span>
                       <span className="truncate">{a.artistName ?? "Sin artista asignado"}</span>
                     </div>
-                    {a.health === "broken" && a.lastError && <p className="mt-1 text-xs text-[#ffb3b3]">{a.lastError}</p>}
+                    {a.health === "broken" && a.lastError && <p className="mt-1 text-xs text-bad-fg">{a.lastError}</p>}
                     {a.health === "expiring" && (
                       <p className="mt-1 text-xs text-warn">La autorización vence el {fmt(a.refreshExpiresAt, tz, "d MMM")}. Reconectala antes.</p>
                     )}

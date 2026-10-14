@@ -30,8 +30,9 @@ export function Shell({
     <div className="flex min-h-dvh">
       <aside className="sticky top-0 z-30 hidden h-dvh w-16 shrink-0 flex-col items-center border-r border-line bg-ink-1/80 pt-4 pb-4 backdrop-blur md:flex">
         <Link href="/calendario" className="group relative mb-6 grid size-10 place-items-center rounded-md" aria-label="88RECORDS®, Panel TikTok™">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/icon.svg" alt="" className="size-8" />
+          <span className="text-[19px] leading-none font-bold tracking-[-0.05em]">
+            88<sup className="ml-px align-super text-[8px] font-medium tracking-normal text-fg-2">®</sup>
+          </span>
           <Tip>88RECORDS® · Panel TikTok™</Tip>
         </Link>
         <nav className="flex flex-col items-center gap-1" aria-label="Principal">
@@ -61,15 +62,19 @@ export function Shell({
             );
           })}
         </nav>
-        <span className="group relative mt-auto grid size-8 place-items-center rounded-full border border-line-strong text-[11px] text-fg-2" tabIndex={0} aria-label={userLabel}>
+        <span aria-hidden className="mt-auto mb-4 rotate-180 text-[11px] font-bold tracking-[0.12em] text-fg-3 [writing-mode:vertical-rl]">
+          88RECORDS<span className="font-medium">®</span>
+        </span>
+        <span className="group relative grid size-8 place-items-center rounded-full border border-line-strong text-[11px] text-fg-2" tabIndex={0} aria-label={userLabel}>
           {userLabel.replace(/^Modo local · /, "").slice(0, 1).toUpperCase()}
           <Tip>{userLabel}</Tip>
         </span>
       </aside>
 
-      <div className="flex min-w-0 flex-1 flex-col pb-16 md:pb-0">
+      {/* En escritorio la ventana no scrollea: cada pantalla scrollea adentro y las columnas laterales caben siempre. */}
+      <div className="flex min-w-0 flex-1 flex-col pb-16 md:h-dvh md:pb-0">
         {notices}
-        {children}
+        <div className="flex min-h-0 flex-1 flex-col md:overflow-y-auto">{children}</div>
       </div>
 
       <nav

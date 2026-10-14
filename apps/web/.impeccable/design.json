@@ -1,0 +1,531 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-14T11:35:21.126Z",
+  "title": "Design System: 88RECORDS® Panel TikTok™",
+  "extensions": {
+    "colorMeta": {
+      "orange": {
+        "role": "primary",
+        "displayName": "Naranja Señal",
+        "canonical": "#ff4d00",
+        "tonalRamp": [
+          "oklch(15% 0.21 41)",
+          "oklch(25% 0.21 41)",
+          "oklch(35% 0.21 41)",
+          "oklch(45% 0.21 41)",
+          "oklch(55% 0.21 41)",
+          "oklch(68% 0.21 41)",
+          "oklch(82% 0.105 41)",
+          "oklch(95% 0.105 41)"
+        ]
+      },
+      "orange-hi": {
+        "role": "primary",
+        "displayName": "Naranja Señal Encendido (hover)",
+        "canonical": "#ff6a26",
+        "tonalRamp": [
+          "oklch(15% 0.2 44)",
+          "oklch(25% 0.2 44)",
+          "oklch(35% 0.2 44)",
+          "oklch(45% 0.2 44)",
+          "oklch(55% 0.2 44)",
+          "oklch(68% 0.2 44)",
+          "oklch(82% 0.100 44)",
+          "oklch(95% 0.100 44)"
+        ]
+      },
+      "ultra": {
+        "role": "secondary",
+        "displayName": "Ultramarino Eléctrico",
+        "canonical": "#1e1ee6",
+        "tonalRamp": [
+          "oklch(15% 0.26 266)",
+          "oklch(25% 0.26 266)",
+          "oklch(35% 0.26 266)",
+          "oklch(45% 0.26 266)",
+          "oklch(55% 0.26 266)",
+          "oklch(68% 0.26 266)",
+          "oklch(82% 0.130 266)",
+          "oklch(95% 0.130 266)"
+        ]
+      },
+      "ultra-hi": {
+        "role": "secondary",
+        "displayName": "Ultramarino Claro",
+        "canonical": "#7070ff",
+        "tonalRamp": [
+          "oklch(15% 0.2 274)",
+          "oklch(25% 0.2 274)",
+          "oklch(35% 0.2 274)",
+          "oklch(45% 0.2 274)",
+          "oklch(55% 0.2 274)",
+          "oklch(68% 0.2 274)",
+          "oklch(82% 0.100 274)",
+          "oklch(95% 0.100 274)"
+        ]
+      },
+      "ok": {
+        "role": "tertiary",
+        "displayName": "Verde Publicado",
+        "canonical": "#3ddc97",
+        "tonalRamp": [
+          "oklch(15% 0.15 160)",
+          "oklch(25% 0.15 160)",
+          "oklch(35% 0.15 160)",
+          "oklch(45% 0.15 160)",
+          "oklch(55% 0.15 160)",
+          "oklch(68% 0.15 160)",
+          "oklch(82% 0.075 160)",
+          "oklch(95% 0.075 160)"
+        ]
+      },
+      "warn": {
+        "role": "tertiary",
+        "displayName": "Ámbar Borrador",
+        "canonical": "#ffb020",
+        "tonalRamp": [
+          "oklch(15% 0.17 75)",
+          "oklch(25% 0.17 75)",
+          "oklch(35% 0.17 75)",
+          "oklch(45% 0.17 75)",
+          "oklch(55% 0.17 75)",
+          "oklch(68% 0.17 75)",
+          "oklch(82% 0.085 75)",
+          "oklch(95% 0.085 75)"
+        ]
+      },
+      "bad": {
+        "role": "tertiary",
+        "displayName": "Rojo Error",
+        "canonical": "#ff5c5c",
+        "tonalRamp": [
+          "oklch(15% 0.19 23)",
+          "oklch(25% 0.19 23)",
+          "oklch(35% 0.19 23)",
+          "oklch(45% 0.19 23)",
+          "oklch(55% 0.19 23)",
+          "oklch(68% 0.19 23)",
+          "oklch(82% 0.095 23)",
+          "oklch(95% 0.095 23)"
+        ]
+      },
+      "busy": {
+        "role": "tertiary",
+        "displayName": "Lavanda Proceso",
+        "canonical": "#8a8aff",
+        "tonalRamp": [
+          "oklch(15% 0.17 280)",
+          "oklch(25% 0.17 280)",
+          "oklch(35% 0.17 280)",
+          "oklch(45% 0.17 280)",
+          "oklch(55% 0.17 280)",
+          "oklch(68% 0.17 280)",
+          "oklch(82% 0.085 280)",
+          "oklch(95% 0.085 280)"
+        ]
+      },
+      "ink-0": {
+        "role": "neutral",
+        "displayName": "Tinta 0",
+        "canonical": "#08090c",
+        "tonalRamp": [
+          "#08090c",
+          "#0d0f13",
+          "#12141a",
+          "#181b22",
+          "#20242d",
+          "#868c9c",
+          "#a6abb7",
+          "#eceef2"
+        ]
+      },
+      "ink-1": {
+        "role": "neutral",
+        "displayName": "Tinta 1",
+        "canonical": "#0d0f13",
+        "tonalRamp": [
+          "#08090c",
+          "#0d0f13",
+          "#12141a",
+          "#181b22",
+          "#20242d",
+          "#868c9c",
+          "#a6abb7",
+          "#eceef2"
+        ]
+      },
+      "ink-2": {
+        "role": "neutral",
+        "displayName": "Tinta 2",
+        "canonical": "#12141a",
+        "tonalRamp": [
+          "#08090c",
+          "#0d0f13",
+          "#12141a",
+          "#181b22",
+          "#20242d",
+          "#868c9c",
+          "#a6abb7",
+          "#eceef2"
+        ]
+      },
+      "ink-3": {
+        "role": "neutral",
+        "displayName": "Tinta 3",
+        "canonical": "#181b22",
+        "tonalRamp": [
+          "#08090c",
+          "#0d0f13",
+          "#12141a",
+          "#181b22",
+          "#20242d",
+          "#868c9c",
+          "#a6abb7",
+          "#eceef2"
+        ]
+      },
+      "ink-4": {
+        "role": "neutral",
+        "displayName": "Tinta 4",
+        "canonical": "#20242d",
+        "tonalRamp": [
+          "#08090c",
+          "#0d0f13",
+          "#12141a",
+          "#181b22",
+          "#20242d",
+          "#868c9c",
+          "#a6abb7",
+          "#eceef2"
+        ]
+      },
+      "line": {
+        "role": "neutral",
+        "displayName": "Línea",
+        "canonical": "rgb(255 255 255 / 0.07)",
+        "tonalRamp": [
+          "rgb(255 255 255 / 0.03)",
+          "rgb(255 255 255 / 0.05)",
+          "rgb(255 255 255 / 0.07)",
+          "rgb(255 255 255 / 0.10)",
+          "rgb(255 255 255 / 0.13)",
+          "rgb(255 255 255 / 0.20)",
+          "rgb(255 255 255 / 0.30)",
+          "rgb(255 255 255 / 0.45)"
+        ]
+      },
+      "line-strong": {
+        "role": "neutral",
+        "displayName": "Línea Fuerte",
+        "canonical": "rgb(255 255 255 / 0.13)",
+        "tonalRamp": [
+          "rgb(255 255 255 / 0.03)",
+          "rgb(255 255 255 / 0.05)",
+          "rgb(255 255 255 / 0.07)",
+          "rgb(255 255 255 / 0.10)",
+          "rgb(255 255 255 / 0.13)",
+          "rgb(255 255 255 / 0.20)",
+          "rgb(255 255 255 / 0.30)",
+          "rgb(255 255 255 / 0.45)"
+        ]
+      },
+      "fg": {
+        "role": "neutral",
+        "displayName": "Texto",
+        "canonical": "#eceef2",
+        "tonalRamp": [
+          "#08090c",
+          "#0d0f13",
+          "#12141a",
+          "#181b22",
+          "#20242d",
+          "#868c9c",
+          "#a6abb7",
+          "#eceef2"
+        ]
+      },
+      "fg-2": {
+        "role": "neutral",
+        "displayName": "Texto 2",
+        "canonical": "#a6abb7",
+        "tonalRamp": [
+          "#08090c",
+          "#0d0f13",
+          "#12141a",
+          "#181b22",
+          "#20242d",
+          "#868c9c",
+          "#a6abb7",
+          "#eceef2"
+        ]
+      },
+      "fg-3": {
+        "role": "neutral",
+        "displayName": "Texto 3",
+        "canonical": "#868c9c",
+        "tonalRamp": [
+          "#08090c",
+          "#0d0f13",
+          "#12141a",
+          "#181b22",
+          "#20242d",
+          "#868c9c",
+          "#a6abb7",
+          "#eceef2"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Título de pantalla en la barra superior."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Título de diálogo."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Tamaño de trabajo: nombres, opciones, listas."
+      },
+      "body-lg": {
+        "displayName": "Body grande",
+        "purpose": "Campos, botones medianos, párrafos de estado vacío."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Cabeceras de columna, ayudas y metadatos en fg-3."
+      },
+      "data": {
+        "displayName": "Data (mono)",
+        "purpose": "Horas, cupos, duraciones y fechas, siempre tabulares."
+      }
+    },
+    "shadows": [
+      {
+        "name": "pop",
+        "value": "0 18px 50px -12px rgb(0 0 0 / 0.65), 0 2px 8px rgb(0 0 0 / 0.4)",
+        "purpose": "Diálogos y tarjeta del login."
+      },
+      {
+        "name": "lift",
+        "value": "0 10px 28px -8px rgb(0 0 0 / 0.6)",
+        "purpose": "Tooltips del riel."
+      },
+      {
+        "name": "glow-orange",
+        "value": "0 0 0 1px rgb(255 77 0 / 0.55), 0 8px 30px -6px rgb(255 77 0 / 0.45)",
+        "purpose": "Lo que se está arrastrando."
+      },
+      {
+        "name": "glow-ultra",
+        "value": "0 0 0 1px rgb(112 112 255 / 0.7), 0 10px 34px -6px rgb(30 30 230 / 0.6)",
+        "purpose": "Elemento seleccionado."
+      },
+      {
+        "name": "drop-target",
+        "value": "inset 0 0 0 1px rgb(112 112 255 / 0.8), inset 0 0 24px rgb(30 30 230 / 0.35)",
+        "purpose": "Celda destino durante un arrastre."
+      },
+      {
+        "name": "button-primary",
+        "value": "0 1px 0 rgb(255 255 255 / 0.25) inset, 0 6px 20px -6px rgb(255 77 0 / 0.55)",
+        "purpose": "Botón principal naranja."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-out-expo",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "Entradas escalonadas de filas (0.35s, 30–40ms por fila) y caída del arrastre (180ms)."
+      },
+      {
+        "name": "state-transition",
+        "value": "150ms ease-out",
+        "purpose": "Color, borde y hundimiento de botones y celdas."
+      },
+      {
+        "name": "spring-dialog",
+        "value": "spring(stiffness 420, damping 34)",
+        "purpose": "Entrada de diálogos desde 14px abajo y 98% de escala."
+      },
+      {
+        "name": "spring-nav",
+        "value": "spring(stiffness 500, damping 40)",
+        "purpose": "Píldora activa del riel."
+      },
+      {
+        "name": "spring-switch",
+        "value": "spring(stiffness 700, damping 40)",
+        "purpose": "Perilla del switch."
+      },
+      {
+        "name": "pulse-soft",
+        "value": "pulse-soft 1.8s cubic-bezier(0.16, 1, 0.3, 1) infinite",
+        "purpose": "Lo que se está publicando o procesando."
+      },
+      {
+        "name": "shimmer",
+        "value": "shimmer 1.6s linear infinite",
+        "purpose": "Skeleton de miniaturas en proceso."
+      },
+      {
+        "name": "drag-trail",
+        "value": "3 springs (900/60, 380/40, 160/28)",
+        "purpose": "Estela naranja detrás del cursor al arrastrar."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "MotionConfig reducedMotion=user + CSS 0.001ms",
+        "purpose": "Todo el movimiento se anula con prefers-reduced-motion."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "sm",
+        "value": "640px"
+      },
+      {
+        "name": "md",
+        "value": "768px"
+      },
+      {
+        "name": "xl",
+        "value": "1280px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Botón principal",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Acción principal de la barra, una por pantalla.",
+      "html": "<button class=\"ds-btn-primary\"><svg width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M4 14.9A7 7 0 1 1 15.7 8h1.8a4.5 4.5 0 0 1 2.5 8.2\"/><path d=\"M12 12v9\"/><path d=\"m16 16-4-4-4 4\"/></svg>Subir videos</button>",
+      "css": ".ds-btn-primary{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 12px;border:0;border-radius:var(--radius-md,9px);background:var(--color-orange,#ff4d00);color:#fff;font:500 13px/1 var(--font-sans,\"Helvetica Neue\",Arial,sans-serif);box-shadow:0 1px 0 rgb(255 255 255/.25) inset,0 6px 20px -6px rgb(255 77 0/.55);cursor:pointer;transition:background .15s ease-out,transform .15s ease-out}.ds-btn-primary:hover{background:var(--color-orange-hi,#ff6a26)}.ds-btn-primary:active{transform:translateY(1px)}.ds-btn-primary:focus-visible{outline:2px solid var(--color-orange,#ff4d00);outline-offset:2px}"
+    },
+    {
+      "name": "Botón secundario",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Acciones de apoyo, como Autollenar semana.",
+      "html": "<button class=\"ds-btn-secondary\"><svg width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#ff4d00\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M12 3l1.9 5.8L20 10l-6.1 1.2L12 17l-1.9-5.8L4 10l6.1-1.2z\"/></svg>Autollenar semana</button>",
+      "css": ".ds-btn-secondary{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 12px;border:1px solid var(--color-line-strong,rgb(255 255 255/.13));border-radius:var(--radius-md,9px);background:var(--color-ink-3,#181b22);color:var(--color-fg,#eceef2);font:500 13px/1 var(--font-sans,\"Helvetica Neue\",Arial,sans-serif);cursor:pointer;transition:background .15s ease-out,border-color .15s ease-out,transform .15s ease-out}.ds-btn-secondary:hover{background:var(--color-ink-4,#20242d);border-color:rgb(255 255 255/.2)}.ds-btn-secondary:active{transform:translateY(1px)}.ds-btn-secondary:focus-visible{outline:2px solid var(--color-orange,#ff4d00);outline-offset:2px}"
+    },
+    {
+      "name": "Botón fantasma",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Acciones terciarias en filas (Reglas, Historial).",
+      "html": "<button class=\"ds-btn-ghost\">Reglas</button>",
+      "css": ".ds-btn-ghost{height:32px;padding:0 12px;border:0;border-radius:var(--radius-md,9px);background:transparent;color:var(--color-fg-2,#a6abb7);font:500 13px/1 var(--font-sans,\"Helvetica Neue\",Arial,sans-serif);cursor:pointer;transition:background .15s,color .15s}.ds-btn-ghost:hover{background:rgb(255 255 255/.05);color:var(--color-fg,#eceef2)}.ds-btn-ghost:focus-visible{outline:2px solid var(--color-orange,#ff4d00);outline-offset:2px}"
+    },
+    {
+      "name": "Campo",
+      "kind": "input",
+      "refersTo": "input-field",
+      "description": "Campo de formulario en tinta 3; foco con contorno naranja.",
+      "html": "<input class=\"ds-input\" placeholder=\"Plantilla de caption\" />",
+      "css": ".ds-input{height:36px;width:260px;padding:0 12px;border:1px solid var(--color-line-strong,rgb(255 255 255/.13));border-radius:var(--radius-md,9px);background:var(--color-ink-3,#181b22);color:var(--color-fg,#eceef2);caret-color:var(--color-orange,#ff4d00);font:400 14px/1.4 var(--font-sans,\"Helvetica Neue\",Arial,sans-serif)}.ds-input::placeholder{color:var(--color-fg-3,#868c9c)}.ds-input:focus-visible{outline:2px solid var(--color-orange,#ff4d00);outline-offset:2px}"
+    },
+    {
+      "name": "Riel de navegación",
+      "kind": "nav",
+      "refersTo": "nav-rail",
+      "description": "Riel de íconos de 64px; activo con píldora e ícono naranja, contador en la Bandeja.",
+      "html": "<nav class=\"ds-rail\"><span class=\"ds-rail-mark\">88<sup>®</sup></span><a class=\"ds-rail-item is-active\" href=\"#\" aria-label=\"Calendario\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\"><rect x=\"3\" y=\"4\" width=\"18\" height=\"18\" rx=\"2\"/><path d=\"M16 2v4M8 2v4M3 10h18\"/></svg></a><a class=\"ds-rail-item\" href=\"#\" aria-label=\"Cuentas\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\"><path d=\"M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2\"/><circle cx=\"9\" cy=\"7\" r=\"4\"/></svg></a><a class=\"ds-rail-item\" href=\"#\" aria-label=\"Bandeja\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\"><path d=\"M22 12h-6l-2 3h-4l-2-3H2\"/><path d=\"M5.5 5.1 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.5-6.9A2 2 0 0 0 16.8 4H7.2a2 2 0 0 0-1.7 1.1z\"/></svg><span class=\"ds-rail-badge\">3</span></a></nav>",
+      "css": ".ds-rail{display:flex;flex-direction:column;align-items:center;gap:4px;width:64px;padding:16px 0;background:rgb(13 15 19/.8);border-right:1px solid var(--color-line,rgb(255 255 255/.07));backdrop-filter:blur(8px)}.ds-rail-mark{margin-bottom:20px;font:700 19px/1 var(--font-sans,\"Helvetica Neue\",Arial,sans-serif);letter-spacing:-.05em;color:var(--color-fg,#eceef2)}.ds-rail-mark sup{font-size:8px;font-weight:500;color:var(--color-fg-2,#a6abb7)}.ds-rail-item{position:relative;display:grid;place-items:center;width:40px;height:40px;border-radius:var(--radius-md,9px);border:1px solid transparent;color:var(--color-fg-3,#868c9c);transition:background .15s,color .15s}.ds-rail-item:hover{background:rgb(255 255 255/.05);color:var(--color-fg,#eceef2)}.ds-rail-item.is-active{background:rgb(255 255 255/.06);border-color:var(--color-line-strong,rgb(255 255 255/.13));color:var(--color-orange,#ff4d00)}.ds-rail-item:focus-visible{outline:2px solid var(--color-orange,#ff4d00);outline-offset:2px}.ds-rail-badge{position:absolute;top:-4px;right:-4px;min-width:16px;padding:0 4px;border-radius:9999px;background:var(--color-orange,#ff4d00);color:#fff;font:400 10px/16px var(--font-mono,ui-monospace,monospace);text-align:center;font-variant-numeric:tabular-nums}"
+    },
+    {
+      "name": "Bloque del calendario",
+      "kind": "chip",
+      "refersTo": "post-chip",
+      "description": "Publicación programada: filo del color de la cuenta, hora en mono, marca de estado; levantado al arrastrar.",
+      "html": "<div class=\"ds-row\"><button class=\"ds-post\"><span class=\"ds-post-thumb\"></span><span class=\"ds-post-body\"><span class=\"ds-post-time\">21:30 <i class=\"ds-mark\"></i></span><span class=\"ds-post-title\">Visualizer portada</span></span></button><button class=\"ds-post is-lifted\"><span class=\"ds-post-thumb\"></span><span class=\"ds-post-body\"><span class=\"ds-post-time\">12:30 <i class=\"ds-mark is-busy\"></i></span><span class=\"ds-post-title\">Hook estribillo</span></span></button></div>",
+      "css": ".ds-row{display:flex;gap:16px}.ds-post{display:flex;align-items:center;gap:6px;width:140px;padding:4px;text-align:left;border:1px solid var(--color-line-strong,rgb(255 255 255/.13));border-left-color:#00C2A8;border-radius:4px;background:var(--color-ink-3,#181b22);cursor:grab;transition:border-color .15s,background .15s,box-shadow .15s}.ds-post:hover{background:var(--color-ink-4,#20242d);border-color:rgb(255 255 255/.25);border-left-color:#00C2A8}.ds-post:focus-visible{outline:2px solid var(--color-orange,#ff4d00);outline-offset:2px}.ds-post.is-lifted{width:180px;transform:rotate(-1.5deg);border-color:rgb(255 77 0/.7);background:var(--color-ink-4,#20242d);box-shadow:0 0 0 1px rgb(255 77 0/.55),0 8px 30px -6px rgb(255 77 0/.45)}.ds-post-thumb{width:16px;height:28px;flex-shrink:0;border-radius:6px;background:var(--color-ink-4,#20242d)}.ds-post-body{min-width:0}.ds-post-time{display:flex;align-items:center;gap:4px;font:400 11px/1.4 var(--font-mono,ui-monospace,monospace);font-variant-numeric:tabular-nums;color:var(--color-fg,#eceef2)}.ds-post-title{display:block;font:400 11px/14px var(--font-sans,\"Helvetica Neue\",Arial,sans-serif);color:var(--color-fg-2,#a6abb7)}.ds-mark{display:inline-block;width:8px;height:8px;border-radius:9999px;background:var(--color-fg,#eceef2)}.ds-mark.is-busy{background:var(--color-busy,#8a8aff);animation:ds-pulse 1.8s cubic-bezier(.16,1,.3,1) infinite}@keyframes ds-pulse{50%{opacity:.45}}@media (prefers-reduced-motion:reduce){.ds-mark.is-busy{animation:none}}"
+    },
+    {
+      "name": "Opción seleccionable",
+      "kind": "custom",
+      "refersTo": "",
+      "description": "Radio en tarjeta de la pantalla de publicación; la elegida lleva luz ultramarina.",
+      "html": "<div class=\"ds-opts\" role=\"radiogroup\"><button class=\"ds-opt is-on\" role=\"radio\" aria-checked=\"true\">Seguidores <svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#7070ff\" stroke-width=\"2\"><path d=\"M20 6 9 17l-5-5\"/></svg></button><button class=\"ds-opt\" role=\"radio\" aria-checked=\"false\">Solo yo</button></div>",
+      "css": ".ds-opts{display:grid;grid-template-columns:1fr 1fr;gap:6px;width:320px}.ds-opt{display:flex;align-items:center;justify-content:space-between;height:40px;padding:0 12px;border:1px solid var(--color-line-strong,rgb(255 255 255/.13));border-radius:var(--radius-md,9px);background:var(--color-ink-3,#181b22);color:var(--color-fg-2,#a6abb7);font:400 13px/1 var(--font-sans,\"Helvetica Neue\",Arial,sans-serif);cursor:pointer;transition:border-color .15s,background .15s,box-shadow .15s}.ds-opt:hover{border-color:rgb(255 255 255/.2);color:var(--color-fg,#eceef2)}.ds-opt.is-on{border-color:var(--color-ultra-hi,#7070ff);background:rgb(30 30 230/.15);color:var(--color-fg,#eceef2);box-shadow:0 0 0 1px rgb(112 112 255/.7),0 10px 34px -6px rgb(30 30 230/.6)}.ds-opt:focus-visible{outline:2px solid var(--color-orange,#ff4d00);outline-offset:2px}"
+    },
+    {
+      "name": "Switch",
+      "kind": "custom",
+      "refersTo": "",
+      "description": "Toggle de permisos de la pantalla de publicación; prendido en naranja.",
+      "html": "<div class=\"ds-sw-row\">Permitir comentarios <button class=\"ds-sw\" role=\"switch\" aria-checked=\"false\" aria-label=\"Permitir comentarios\"></button></div><div class=\"ds-sw-row\">Permitir dúo <button class=\"ds-sw is-on\" role=\"switch\" aria-checked=\"true\" aria-label=\"Permitir dúo\"></button></div>",
+      "css": ".ds-sw-row{display:flex;align-items:center;justify-content:space-between;gap:16px;width:280px;padding:10px 0;font:400 14px/1.4 var(--font-sans,\"Helvetica Neue\",Arial,sans-serif);color:var(--color-fg,#eceef2)}.ds-sw{position:relative;width:36px;height:20px;border-radius:9999px;border:1px solid var(--color-line-strong,rgb(255 255 255/.13));background:var(--color-ink-4,#20242d);cursor:pointer;transition:background .2s,border-color .2s}.ds-sw::after{content:\"\";position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:9999px;background:#fff;transition:transform .2s cubic-bezier(.16,1,.3,1)}.ds-sw.is-on{background:var(--color-orange,#ff4d00);border-color:var(--color-orange,#ff4d00)}.ds-sw.is-on::after{transform:translateX(16px)}.ds-sw:focus-visible{outline:2px solid var(--color-orange,#ff4d00);outline-offset:2px}"
+    }
+  ],
+  "narrative": {
+    "northStar": "La consola de luz",
+    "overview": "Un instrumento de alta gama para una sola persona que opera muchas cuentas. La base es casi negra pero nunca plana: cinco capas de tinta fría (`ink-0` a `ink-4`) apiladas con bordes de 1px blancos a muy baja opacidad, y dos fuentes de luz muy tenues fijas sobre el fondo del body (ultramarino arriba a la izquierda, naranja arriba a la derecha). Sobre esa oscuridad, el color de marca no rellena: ilumina. El naranja es la luz de la acción (botón principal, foco, hoy, la estela que deja lo arrastrado); el ultramarino es la luz de la selección (celda destino, opción elegida, ítem marcado).\n\nLa densidad es de herramienta, no de folleto. El cuerpo dominante es de 13px, las horas, cupos y fechas van en Geist Mono con cifras tabulares, y la pantalla principal es una grilla de calendario con una fila por cuenta. Cada cuenta tiene su propio color, que aparece como anillo del avatar, filo izquierdo de cada bloque y un degradé suave en la cabecera de su fila. El vidrio aparece solo donde hay jerarquía: la barra superior pegajosa, el riel, la barra de pestañas del celular y los diálogos.\n\nEl movimiento tiene sentido operativo: springs en layout y diálogos, entradas escalonadas cortas de filas, un pulso suave en lo que se está publicando, shimmer en lugar de spinners para lo que se procesa. Todo se apaga con `prefers-reduced-motion`. El único fondo vivo está en el login. Rechazo confirmado: el look de plantilla SaaS (degradés violeta-azul, tarjetas dentro de tarjetas, íconos en cuadradito sobre cada título, Inter para todo).",
+    "keyCharacteristics": [
+      "Base de tinta fría en cinco capas, con bordes de 1px en lugar de sombras para separar superficies.",
+      "Naranja = acción, ultramarino = selección; los dos se usan como luz (glow, filo, punto), casi nunca como relleno de superficie.",
+      "Color propio por cuenta, presente en avatar, filo del bloque y cabecera de fila.",
+      "Geist Sans para interfaz, Geist Mono tabular para todo número, hora o código.",
+      "Estado como marca de 8px: llena = programado, hueca = propuesto, color = resultado.",
+      "Movimiento con springs y pulsos suaves, siempre anulable por `prefers-reduced-motion`."
+    ],
+    "rules": [
+      {
+        "name": "The Light Not Fill Rule",
+        "body": "Naranja y ultramarino son luz: glow, filo, punto, contorno. El único relleno pleno naranja es el botón principal (y el contador de la Bandeja); el ultramarino solo rellena al 12–15% de opacidad o en el checkbox marcado.",
+        "section": "colors"
+      },
+      {
+        "name": "The Two Lights Rule",
+        "body": "Naranja significa \"hacé esto\"; ultramarino significa \"esto está elegido o es el destino\". No se intercambian.",
+        "section": "colors"
+      },
+      {
+        "name": "The Cool Ink Rule",
+        "body": "Ninguna superficie es negro plano. El fondo lleva las dos luces radiales fijas del body y las superficies suben por la escala de tinta.",
+        "section": "colors"
+      },
+      {
+        "name": "The Mono Numbers Rule",
+        "body": "Toda hora, cifra, cupo, fecha numérica o código va en Geist Mono con `tabular-nums`. Las palabras van en Sans.",
+        "section": "typography"
+      },
+      {
+        "name": "The Sentence Case Rule",
+        "body": "La interfaz va en minúscula de oración. No hay etiquetas en mayúsculas ni sobre-títulos; la única excepción es el wordmark vertical 88RECORDS® del riel.",
+        "section": "typography"
+      },
+      {
+        "name": "The Flat At Rest Rule",
+        "body": "Las superficies del dashboard son planas en reposo; la sombra negra es para lo que flota y la sombra de color es para lo que está activo.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Glass Where It Ranks Rule",
+        "body": "El desenfoque de fondo se reserva para la barra superior pegajosa, el riel, la barra de pestañas, los diálogos (con su overlay) y la tarjeta del login sobre el fondo vivo. No se aplica a tarjetas ni filas del dashboard.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do separar superficies con la escala de tinta y bordes de 1px (Línea / Línea Fuerte) antes de pensar en sombras.",
+      "Do usar naranja para la acción principal y el foco, y ultramarino para selección y destino de arrastre.",
+      "Do poner toda hora, cifra y fecha numérica en Geist Mono con cifras tabulares.",
+      "Do identificar cada cuenta con su color en avatar, filo de bloque y punto, nunca en fondos plenos.",
+      "Do mostrar lo que se está procesando con el pulso suave (1.8s) o el shimmer, no con spinners de pantalla.",
+      "Do usar springs para layout, diálogos y switches, y respetar `prefers-reduced-motion` en todo.",
+      "Do mantener las acciones de un diálogo en su pie fijo.",
+      "Do escribir la marca como 88RECORDS® y los productos internos con ™."
+    ],
+    "donts": [
+      "Don't usar degradés violeta-azul, tarjetas dentro de tarjetas, íconos en cuadradito sobre cada título ni Inter para todo.",
+      "Don't rellenar superficies grandes con naranja o ultramarino; son luz, no pintura.",
+      "Don't usar negro plano como fondo.",
+      "Don't poner etiquetas en mayúsculas ni sobre-títulos encima de los encabezados.",
+      "Don't poner fondos vivos o animaciones decorativas dentro del dashboard; el fondo animado es exclusivo del login.",
+      "Don't usar vidrio en tarjetas o filas; solo en barras pegajosas, riel, pestañas, diálogos y la tarjeta del login."
+    ]
+  }
+}

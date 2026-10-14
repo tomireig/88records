@@ -11,8 +11,8 @@ export const dynamic = "force-dynamic";
 
 function Notice({ tone, icon, children }: { tone: "warn" | "bad" | "info"; icon: React.ReactNode; children: React.ReactNode }) {
   const tones = {
-    warn: "border-warn/25 bg-warn/[0.06] text-[#ffd48a]",
-    bad: "border-bad/25 bg-bad/[0.07] text-[#ffb3b3]",
+    warn: "border-warn/25 bg-warn/[0.06] text-warn-fg",
+    bad: "border-bad/25 bg-bad/[0.07] text-bad-fg",
     info: "border-line bg-white/[0.02] text-fg-2",
   };
   return (

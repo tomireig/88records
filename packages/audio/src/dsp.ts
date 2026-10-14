@@ -7,10 +7,10 @@ export const FRAME = 2048;
 export const HOP = 512;
 export const FPS = SR / HOP;
 
-/** Audio mono a 22.05 kHz en float32. */
-export function decode(path: string, maxSeconds = 900): Promise<Float32Array> {
+/** Audio mono en float32 (22.05 kHz por defecto; Whisper usa 16 kHz). */
+export function decode(path: string, maxSeconds = 900, sampleRate = SR): Promise<Float32Array> {
   return new Promise((resolve, reject) => {
-    const child = spawn(FFMPEG(), ["-v", "error", "-i", path, "-t", String(maxSeconds), "-ac", "1", "-ar", String(SR), "-f", "f32le", "-"], {
+    const child = spawn(FFMPEG(), ["-v", "error", "-i", path, "-t", String(maxSeconds), "-ac", "1", "-ar", String(sampleRate), "-f", "f32le", "-"], {
       windowsHide: true,
     });
     const chunks: Buffer[] = [];
