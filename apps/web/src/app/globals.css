@@ -12,7 +12,7 @@
 
   --color-fg: #eceef2;
   --color-fg-2: #a6abb7;
-  --color-fg-3: #7b8191;
+  --color-fg-3: #868c9c;
 
   --color-orange: #ff4d00;
   --color-orange-hi: #ff6a26;
@@ -123,4 +123,10 @@ a { text-underline-offset: 3px; }
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
   }
+}
+
+/* Selector de fecha nativo con el ícono en el color del texto secundario. */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(0.75);
+  cursor: pointer;
 }

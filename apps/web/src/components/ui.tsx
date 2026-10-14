@@ -93,6 +93,7 @@ export function Dialog({
   title,
   description,
   children,
+  footer,
   width = "max-w-2xl",
 }: {
   open: boolean;
@@ -100,6 +101,8 @@ export function Dialog({
   title: string;
   description?: string;
   children: ReactNode;
+  /** Fijo debajo del contenido: las acciones nunca quedan fuera de la vista. */
+  footer?: ReactNode;
   width?: string;
 }) {
   return (
@@ -139,6 +142,7 @@ export function Dialog({
                   </RDialog.Close>
                 </div>
                 <div className="min-h-0 flex-1 overflow-y-auto">{children}</div>
+                {footer && <div className="shrink-0 border-t border-line bg-ink-1/80 px-5 py-4">{footer}</div>}
               </motion.div>
             </RDialog.Content>
           </RDialog.Portal>
@@ -148,7 +152,7 @@ export function Dialog({
   );
 }
 
-export function Avatar({ src, name, color, size = 28, spinning }: { src?: string | null; name: string; color: string; size?: number; spinning?: boolean }) {
+export function Avatar({ src, name, color, size = 28, busy }: { src?: string | null; name: string; color: string; size?: number; busy?: boolean }) {
   const initials = name
     .split(/\s+/)
     .map((w) => w[0])
@@ -160,12 +164,9 @@ export function Avatar({ src, name, color, size = 28, spinning }: { src?: string
       className="relative inline-grid shrink-0 place-items-center rounded-full"
       style={{ width: size, height: size, boxShadow: `0 0 0 1.5px ${color}, 0 0 14px -2px ${color}66` }}
     >
-      {spinning && (
-        <span
-          aria-hidden
-          className="absolute -inset-[3px] animate-spin-slow rounded-full"
-          style={{ background: `conic-gradient(from 0deg, transparent 0 70%, ${color} 100%)`, mask: "radial-gradient(circle, transparent 62%, #000 64%)" }}
-        />
+      {busy && (
+        // Late suave mientras algo de la cuenta se está publicando.
+        <span aria-hidden className="absolute -inset-[4px] animate-pulse-soft rounded-full" style={{ boxShadow: `0 0 0 1.5px ${color}, 0 0 18px ${color}` }} />
       )}
       {src ? (
         // eslint-disable-next-line @next/next/no-img-element
@@ -204,4 +205,16 @@ export function StatusMark({ mark, withLabel }: { mark: Mark; withLabel?: boolea
 
 export function Kbd({ children }: { children: ReactNode }) {
   return <kbd className="rounded border border-line-strong bg-ink-3 px-1.5 py-px font-mono text-[10px] text-fg-2">{children}</kbd>;
+}
+
+export function Checkbox({ checked, onChange, label }: { checked: boolean; onChange: () => void; label: string }) {
+  return (
+    <input
+      type="checkbox"
+      checked={checked}
+      onChange={onChange}
+      aria-label={label}
+      className="grid size-4 shrink-0 cursor-pointer appearance-none place-content-center rounded border border-line-strong bg-ink-3 transition-colors checked:border-ultra-hi checked:bg-ultra before:hidden before:size-2 before:rounded-[2px] before:bg-white checked:before:block hover:border-white/30"
+    />
+  );
 }

@@ -7,7 +7,7 @@ import { useEffect, useRef, useState, useTransition } from "react";
 import { toast } from "sonner";
 import { createArtist, disconnect, saveAccountRules } from "@/app/actions";
 import type { AccountDTO, ArtistDTO } from "@/lib/data";
-import { fmt, when } from "@/lib/when";
+import { fmt, relativeWhen } from "@/lib/when";
 import { Avatar, Button, cn, Dialog } from "../ui";
 
 const FLASH_ERRORS: Record<string, string> = {
@@ -76,7 +76,7 @@ export function AccountsView({
             {accounts.map((a, i) => (
               <motion.li
                 key={a.id}
-                initial={{ opacity: 0, y: 6 }}
+                initial={{ opacity: 0.4, y: 6 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: Math.min(i * 0.04, 0.4), duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
                 className={cn("flex flex-wrap items-center gap-x-5 gap-y-3 px-4 py-4 md:flex-nowrap", a.health === "broken" && "bg-bad/[0.03]")}
@@ -100,7 +100,7 @@ export function AccountsView({
                   </div>
                 </div>
 
-                <dl className="grid grid-cols-2 gap-x-6 text-xs md:w-[260px]">
+                <dl className="grid w-full grid-cols-2 gap-x-6 text-xs md:w-[240px]">
                   <div>
                     <dt className="text-fg-3">Hoy</dt>
                     <dd className="mt-0.5 font-mono text-sm tabular">
@@ -110,7 +110,7 @@ export function AccountsView({
                   </div>
                   <div>
                     <dt className="text-fg-3">Próxima</dt>
-                    <dd className="mt-0.5 truncate font-mono text-sm tabular">{a.nextPostAt ? when(a.nextPostAt, tz) : "—"}</dd>
+                    <dd className="mt-0.5 truncate font-mono text-sm tabular">{a.nextPostAt ? relativeWhen(a.nextPostAt, tz) : "—"}</dd>
                   </div>
                 </dl>
 
@@ -203,9 +203,38 @@ function RulesDialog({ account, artists, onClose }: { account: AccountDTO | null
   const field = "h-9 w-full rounded-md border border-line-strong bg-ink-3 px-3 text-sm placeholder:text-fg-3";
 
   return (
-    <Dialog open={Boolean(account)} onOpenChange={(o) => !o && onClose()} title={`Reglas de ${account?.displayName ?? ""}`} width="max-w-lg">
+    <Dialog open={Boolean(account)} onOpenChange={(o) => !o && onClose()} title={`Reglas de ${account?.displayName ?? ""}`}
+      width="max-w-lg"
+      footer={account && (
+          <div className="flex items-center justify-between">
+            <Button
+              type="button"
+              variant="danger"
+              size="sm"
+              icon={<Unplug className="size-3.5" />}
+              disabled={pending}
+              onClick={() =>
+                start(async () => {
+                  if (!confirm(`¿Desconectar ${account!.displayName}? Se cancelan sus publicaciones programadas.`)) return;
+                  const r = await disconnect(account!.id);
+                  if (r.ok) {
+                    toast.success("Cuenta desconectada");
+                    onClose();
+                  } else toast.error(r.error);
+                })
+              }
+            >
+              Desconectar
+            </Button>
+            <Button type="submit" form="rules-form" variant="primary" loading={pending}>
+              Guardar reglas
+            </Button>
+          </div>
+      )}
+    >
       {account && (
         <form
+          id="rules-form"
           className="space-y-5 p-5"
           onSubmit={(e) => {
             e.preventDefault();
@@ -285,30 +314,6 @@ function RulesDialog({ account, artists, onClose }: { account: AccountDTO | null
             </div>
           </fieldset>
 
-          <div className="flex items-center justify-between border-t border-line pt-4">
-            <Button
-              type="button"
-              variant="danger"
-              size="sm"
-              icon={<Unplug className="size-3.5" />}
-              disabled={pending}
-              onClick={() =>
-                start(async () => {
-                  if (!confirm(`¿Desconectar ${account.displayName}? Se cancelan sus publicaciones programadas.`)) return;
-                  const r = await disconnect(account.id);
-                  if (r.ok) {
-                    toast.success("Cuenta desconectada");
-                    onClose();
-                  } else toast.error(r.error);
-                })
-              }
-            >
-              Desconectar
-            </Button>
-            <Button type="submit" variant="primary" loading={pending}>
-              Guardar reglas
-            </Button>
-          </div>
         </form>
       )}
     </Dialog>

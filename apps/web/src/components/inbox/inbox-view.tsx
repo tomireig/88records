@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, CheckCheck, X } from "lucide-react";
+import { Check, CheckCheck, Pencil, X } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -10,7 +10,8 @@ import { approveProposals, discardProposals, loadBatchContext } from "@/app/acti
 import type { AccountDTO, ProposalDTO } from "@/lib/data";
 import { fmt, when } from "@/lib/when";
 import { ChoicesForm, choicesProblems, ConsentText, EMPTY_CHOICES, type ChoicesState } from "../publish/choices-form";
-import { Avatar, Button, cn, Dialog } from "../ui";
+import { PublishDialog, type PublishTarget } from "../publish/publish-dialog";
+import { Avatar, Button, Checkbox, cn, Dialog } from "../ui";
 
 type Batch = Extract<Awaited<ReturnType<typeof loadBatchContext>>, { ok: true }>;
 
@@ -36,6 +37,7 @@ export function InboxView({
   const router = useRouter();
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [approving, setApproving] = useState<string[] | null>(null);
+  const [editing, setEditing] = useState<PublishTarget | null>(null);
   const [pending, start] = useTransition();
   const accById = useMemo(() => new Map(accounts.map((a) => [a.id, a])), [accounts]);
 
@@ -104,7 +106,7 @@ export function InboxView({
                   <motion.li
                     key={p.actionId}
                     layout
-                    initial={{ opacity: 0, y: 6 }}
+                    initial={{ opacity: 0.4, y: 6 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, x: -20, transition: { duration: 0.2 } }}
                     transition={{ delay: Math.min(i * 0.03, 0.3), duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
@@ -114,7 +116,7 @@ export function InboxView({
                     )}
                   >
                     <label className="flex shrink-0 cursor-pointer items-start pt-1">
-                      <input type="checkbox" checked={isSel} onChange={() => toggle(p.actionId)} className="size-4 accent-[#1e1ee6]" aria-label={`Seleccionar ${p.videoTitle}`} />
+                      <Checkbox checked={isSel} onChange={() => toggle(p.actionId)} label={`Seleccionar ${p.videoTitle}`} />
                     </label>
                     <div className="relative h-24 w-[54px] shrink-0 overflow-hidden rounded bg-ink-4">
                       {p.thumbUrl && (
@@ -133,9 +135,31 @@ export function InboxView({
                       <p className="mt-1.5 text-xs leading-5 text-fg-2">{p.reason}</p>
                     </div>
                     <div className="flex shrink-0 flex-col gap-1.5 sm:flex-row sm:items-start">
-                      <Button size="sm" variant="primary" icon={<Check className="size-3.5" />} onClick={() => setApproving([p.actionId])}>
+                      <Button size="sm" icon={<Check className="size-3.5 text-orange" />} onClick={() => setApproving([p.actionId])}>
                         Aprobar
                       </Button>
+                      {acc && (
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          icon={<Pencil className="size-3.5" />}
+                          onClick={() =>
+                            setEditing({
+                              accountId: acc.id,
+                              accountName: acc.displayName,
+                              accountColor: acc.color,
+                              avatarUrl: acc.avatarUrl,
+                              videoId: p.videoId,
+                              at: p.scheduledFor,
+                              caption: p.caption,
+                              slots: acc.preferredSlots,
+                              actionId: p.actionId,
+                            })
+                          }
+                        >
+                          Editar
+                        </Button>
+                      )}
                       <Button size="sm" variant="ghost" disabled={pending} onClick={() => discard([p.actionId])} aria-label={`Descartar ${p.videoTitle}`}>
                         <X className="size-3.5" />
                       </Button>
@@ -165,6 +189,14 @@ export function InboxView({
         )}
       </div>
 
+      <PublishDialog
+        target={editing}
+        tz={tz}
+        onClose={(done) => {
+          setEditing(null);
+          if (done) router.refresh();
+        }}
+      />
       <ApproveDialog
         ids={approving}
         proposals={proposals}
@@ -215,6 +247,44 @@ function ApproveDialog({ ids, proposals, onClose }: { ids: string[] | null; prop
       title={n === 1 ? "Aprobar publicación" : `Aprobar ${n} publicaciones`}
       description={single ? single.videoTitle : "Lo que elijas acá se aplica a todas. Cada una sale en su cuenta y horario."}
       width="max-w-xl"
+      footer={
+        batch && (
+          <>
+            <ConsentText brandContent={choices.brandContent} />
+            {problems[0] && <p className="mt-2 text-xs text-warn">{problems[0]}</p>}
+            <div className="mt-3 flex justify-end gap-2">
+              <Button variant="ghost" onClick={() => onClose(false)}>
+                Cancelar
+              </Button>
+              <Button
+                variant="primary"
+                icon={<CheckCheck className="size-4" />}
+                loading={pending}
+                disabled={problems.length > 0 || (direct && batch.common.length === 0)}
+                onClick={() =>
+                  start(async () => {
+                    const r = await approveProposals(ids!, {
+                      privacyLevel: direct ? choices.privacyLevel : null,
+                      allowComment: choices.allowComment,
+                      allowDuet: choices.allowDuet,
+                      allowStitch: choices.allowStitch,
+                      brandOrganic: choices.brandOrganic,
+                      brandContent: choices.brandContent,
+                      consent: true,
+                    });
+                    if (!r.ok) return void toast.error(r.error);
+                    if (r.approved) toast.success(`${r.approved} ${r.approved === 1 ? "publicación programada" : "publicaciones programadas"}`);
+                    for (const e of r.errors.slice(0, 3)) toast.error(e.message);
+                    onClose(r.approved > 0);
+                  })
+                }
+              >
+                {n === 1 ? "Aprobar y programar" : `Aprobar ${n}`}
+              </Button>
+            </div>
+          </>
+        )
+      }
     >
       {error && <p className="p-5 text-sm text-bad">{error}</p>}
       {!batch && !error && (
@@ -250,40 +320,6 @@ function ApproveDialog({ ids, proposals, onClose }: { ids: string[] | null; prop
                 locked={{ comment: batch.commentLocked, duet: batch.duetLocked, stitch: batch.stitchLocked }}
               />
             )}
-          </div>
-          <div className="border-t border-line bg-ink-1/60 px-5 py-4">
-            <ConsentText brandContent={choices.brandContent} />
-            {problems[0] && <p className="mt-2 text-xs text-warn">{problems[0]}</p>}
-            <div className="mt-3 flex justify-end gap-2">
-              <Button variant="ghost" onClick={() => onClose(false)}>
-                Cancelar
-              </Button>
-              <Button
-                variant="primary"
-                icon={<CheckCheck className="size-4" />}
-                loading={pending}
-                disabled={problems.length > 0 || (direct && batch.common.length === 0)}
-                onClick={() =>
-                  start(async () => {
-                    const r = await approveProposals(ids!, {
-                      privacyLevel: direct ? choices.privacyLevel : null,
-                      allowComment: choices.allowComment,
-                      allowDuet: choices.allowDuet,
-                      allowStitch: choices.allowStitch,
-                      brandOrganic: choices.brandOrganic,
-                      brandContent: choices.brandContent,
-                      consent: true,
-                    });
-                    if (!r.ok) return void toast.error(r.error);
-                    if (r.approved) toast.success(`${r.approved} ${r.approved === 1 ? "publicación programada" : "publicaciones programadas"}`);
-                    for (const e of r.errors.slice(0, 3)) toast.error(e.message);
-                    onClose(r.approved > 0);
-                  })
-                }
-              >
-                {n === 1 ? "Aprobar y programar" : `Aprobar ${n}`}
-              </Button>
-            </div>
           </div>
         </>
       )}

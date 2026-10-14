@@ -19,6 +19,6 @@ STORY: El operador ve de un vistazo qué sale hoy y en qué cuenta, arrastra vid
 
 FIRST VIEWPORT: Riel izquierdo angosto (Calendario, Biblioteca, Cuentas, Bandeja con contador). Barra superior: semana actual, flechas, Semana/Mes, "Autollenar semana" (secundario) y "Subir videos" (principal naranja). Centro: calendario semanal, una fila por cuenta (avatar, nombre, cupo de hoy en mono), siete columnas por día con las publicaciones como bloques con miniatura y hora. Derecha: biblioteca en columna angosta con videos listos para arrastrar. Banner "Modo sin auditar" arriba cuando aplica.
 
-FORM: Estándar de la categoría (la salida fija), elegido por el usuario por sobre la tirada. Vara: Raycast y Later/Buffer. Movimiento firma: el bloque arrastrado deja una estela de luz naranja y la celda destino se ilumina en ultramarino; lo que se está publicando late suave. seed: 13b3b576 (canon)
+FORM: Estándar de la categoría (la salida fija), elegido por el usuario por sobre la tirada. Vara: Raycast y Later/Buffer. Movimiento firma: el bloque arrastrado deja una estela de luz naranja y la celda destino se ilumina en ultramarino; lo que se está publicando late suave. seed: none (unavailable)
 
 FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, DESIGN.md, and every shipping raster carrying its provenance

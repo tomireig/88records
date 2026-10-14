@@ -131,7 +131,7 @@ export async function loadPublishContext(accountId: string, videoId: string, at:
   });
 }
 
-export async function createPost(input: { accountId: string; videoId: string; at: string; choices: PublishChoices }) {
+export async function createPost(input: { accountId: string; videoId: string; at: string; choices: PublishChoices; actionId?: string }) {
   return run(async () => {
     const s = await sessionOrThrow();
     const info = await withAccessToken(input.accountId, (t) => tiktok().creatorInfo(t));
@@ -143,7 +143,15 @@ export async function createPost(input: { accountId: string; videoId: string; at
       at: new Date(input.at),
       choices: input.choices,
       info,
+      actionId: input.actionId,
     });
+    if (input.actionId) {
+      // Editada en la pantalla de publicación: la propuesta queda aprobada con lo que eligió el usuario.
+      await db.action.updateMany({
+        where: { id: input.actionId, organizationId: s.org.id, status: "proposed" },
+        data: { status: "approved", decidedById: s.user.id, decidedAt: new Date(), result: { postId: post.id, edited: true } },
+      });
+    }
     refresh();
     return { postId: post.id };
   });

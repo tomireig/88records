@@ -57,7 +57,7 @@ export function PostDetail({ postId, tz, onClose }: { postId: string | null; tz:
       {post && (
         <div className="divide-y divide-line">
           <div className="flex items-center gap-3 px-5 py-4">
-            <Avatar src={post.account.avatarUrl} name={post.account.displayName} color={post.account.color} size={34} spinning={post.status === "publishing" || post.status === "processing"} />
+            <Avatar src={post.account.avatarUrl} name={post.account.displayName} color={post.account.color} size={34} busy={post.status === "publishing" || post.status === "processing"} />
             <div className="min-w-0 flex-1">
               <div className="truncate text-sm font-medium">{post.creatorNickname || post.account.displayName}</div>
               <div className="font-mono text-xs text-fg-3 tabular">{when(post.scheduledFor, tz)}</div>

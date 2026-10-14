@@ -131,6 +131,22 @@ importers:
         specifier: 4.1.11
         version: 4.1.11(@types/node@22.18.0)(vite@8.3.4(@types/node@22.18.0)(jiti@2.7.0)(tsx@4.20.5))
 
+  packages/audio:
+    dependencies:
+      '@88/video':
+        specifier: workspace:*
+        version: link:../video
+    devDependencies:
+      '@types/node':
+        specifier: 22.18.0
+        version: 22.18.0
+      typescript:
+        specifier: 5.9.3
+        version: 5.9.3
+      vitest:
+        specifier: 4.1.11
+        version: 4.1.11(@types/node@22.18.0)(vite@8.3.4(@types/node@22.18.0)(jiti@2.7.0)(tsx@4.20.5))
+
   packages/connectors:
     devDependencies:
       '@types/node':

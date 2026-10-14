@@ -11,9 +11,10 @@ import {
   useSensors,
   type DragEndEvent,
   type DragStartEvent,
+  type Modifier,
 } from "@dnd-kit/core";
 import { ChevronLeft, ChevronRight, Plus, Sparkles, UploadCloud } from "lucide-react";
-import { motion } from "motion/react";
+import { motion, useReducedMotion, useSpring } from "motion/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState, useTransition } from "react";
@@ -40,6 +41,43 @@ interface Props {
 }
 
 const BUSY = new Set(["publishing", "processing"]);
+
+/** Corre el chip arrastrado al costado del cursor para que se vea la celda destino iluminada. */
+const besideCursor: Modifier = ({ transform }) => ({ ...transform, x: transform.x + 22, y: transform.y + 18 });
+
+/** Estela naranja detrás del cursor mientras se arrastra: tres luces que siguen con distinto retraso. */
+function DragTrail({ active }: { active: boolean }) {
+  const reduce = useReducedMotion();
+  const springs = [
+    { x: useSpring(0, { stiffness: 900, damping: 60 }), y: useSpring(0, { stiffness: 900, damping: 60 }) },
+    { x: useSpring(0, { stiffness: 380, damping: 40 }), y: useSpring(0, { stiffness: 380, damping: 40 }) },
+    { x: useSpring(0, { stiffness: 160, damping: 28 }), y: useSpring(0, { stiffness: 160, damping: 28 }) },
+  ];
+  useEffect(() => {
+    if (!active || reduce) return;
+    const move = (e: PointerEvent) => {
+      for (const s of springs) {
+        s.x.set(e.clientX);
+        s.y.set(e.clientY);
+      }
+    };
+    window.addEventListener("pointermove", move);
+    return () => window.removeEventListener("pointermove", move);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [active, reduce]);
+  if (!active || reduce) return null;
+  return (
+    <div aria-hidden className="pointer-events-none fixed inset-0 z-[60]">
+      {springs.map((s, i) => (
+        <motion.span
+          key={i}
+          className="absolute -mt-2 -ml-2 size-4 rounded-full bg-orange blur-[3px]"
+          style={{ x: s.x, y: s.y, opacity: 0.55 - i * 0.16, scale: 1 - i * 0.2 }}
+        />
+      ))}
+    </div>
+  );
+}
 
 function buildCaption(account: AccountDTO, video: { title: string }): string {
   const base = (account.captionTemplate || "{titulo}").replaceAll("{titulo}", video.title).trim();
@@ -129,6 +167,7 @@ function Board({ tz, view, start, anchorDay, days, accounts, posts: initialPosts
         videoId: d.video.id,
         at: suggestTime(account, over.day, posts, tz),
         caption: buildCaption(account, d.video),
+        slots: account.preferredSlots,
       });
       return;
     }
@@ -163,6 +202,19 @@ function Board({ tz, view, start, anchorDay, days, accounts, posts: initialPosts
     });
   }
 
+  // ← → cambian de semana o mes, T vuelve a hoy. Nunca mientras se escribe.
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      const el = e.target as HTMLElement;
+      if (e.metaKey || e.ctrlKey || e.altKey || el.closest("input, textarea, select, [contenteditable], [role=dialog]")) return;
+      if (e.key === "ArrowLeft") router.push(nav(-1));
+      else if (e.key === "ArrowRight") router.push(nav(1));
+      else if (e.key.toLowerCase() === "t") router.push(`/calendario?vista=${view === "month" ? "mes" : "semana"}`);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  });
+
   const ready = videos.filter((v) => v.status === "ready");
 
   return (
@@ -171,10 +223,10 @@ function Board({ tz, view, start, anchorDay, days, accounts, posts: initialPosts
         <section className="flex min-w-0 flex-1 flex-col">
           <header className="sticky top-0 z-20 flex flex-wrap items-center gap-2 border-b border-line bg-ink-0/80 px-4 py-3 backdrop-blur-xl md:px-6">
             <div className="flex items-center gap-1">
-              <Link href={nav(-1)} className="grid size-8 place-items-center rounded-md text-fg-2 hover:bg-white/5 hover:text-fg" aria-label="Anterior">
+              <Link href={nav(-1)} className="grid size-8 place-items-center rounded-md text-fg-2 hover:bg-white/5 hover:text-fg" aria-label="Anterior" title="Anterior (←)">
                 <ChevronLeft className="size-4" />
               </Link>
-              <Link href={nav(1)} className="grid size-8 place-items-center rounded-md text-fg-2 hover:bg-white/5 hover:text-fg" aria-label="Siguiente">
+              <Link href={nav(1)} className="grid size-8 place-items-center rounded-md text-fg-2 hover:bg-white/5 hover:text-fg" aria-label="Siguiente" title="Siguiente (→)">
                 <ChevronRight className="size-4" />
               </Link>
             </div>
@@ -259,7 +311,8 @@ function Board({ tz, view, start, anchorDay, days, accounts, posts: initialPosts
         </aside>
       </div>
 
-      <DragOverlay dropAnimation={{ duration: 180, easing: "cubic-bezier(0.16, 1, 0.3, 1)" }}>
+      <DragTrail active={Boolean(dragging)} />
+      <DragOverlay modifiers={[besideCursor]} dropAnimation={{ duration: 180, easing: "cubic-bezier(0.16, 1, 0.3, 1)" }}>
         {dragging?.kind === "video" && <VideoChip video={dragging.video} lifted />}
         {dragging?.kind === "post" && <PostChip post={dragging.post} tz={tz} color={accById.get(dragging.post.accountId)?.color ?? "#fff"} lifted />}
       </DragOverlay>
@@ -323,15 +376,15 @@ function WeekGrid({
   onOpenPost: (id: string) => void;
 }) {
   return (
-    <div className="hidden min-h-0 flex-1 overflow-auto md:block">
-      <div className="min-w-[960px]">
-        <div className="sticky top-0 z-10 grid grid-cols-[200px_repeat(7,minmax(0,1fr))] border-b border-line bg-ink-0/90 backdrop-blur">
+    <div className="hidden min-h-0 flex-1 overflow-auto md:flex">
+      <div className="flex min-h-full min-w-[960px] flex-1 flex-col">
+        <div className="sticky top-0 z-10 grid grid-cols-[176px_repeat(7,minmax(0,1fr))] border-b border-line bg-ink-0/90 backdrop-blur">
           <div className="px-4 py-2.5 text-xs text-fg-3">Cuenta</div>
           {days.map((d) => {
             const isToday = d === today;
             return (
               <div key={d} className={cn("relative px-3 py-2.5 text-xs", isToday ? "text-fg" : "text-fg-3")}>
-                {isToday && <span className="absolute inset-x-2 top-0 h-px bg-ultra-hi shadow-[0_0_12px_rgb(112_112_255/0.9)]" />}
+                {isToday && <span className="absolute inset-x-2 top-0 h-px bg-orange shadow-[0_0_12px_rgb(255_77_0/0.9)]" />}
                 <span className="capitalize">{fmt(atLocal(d, "12:00", tz), tz, "EEE")}</span>{" "}
                 <span className="font-mono tabular">{d.slice(8)}</span>
               </div>
@@ -344,18 +397,21 @@ function WeekGrid({
           return (
             <motion.div
               key={acc.id}
-              initial={{ opacity: 0, y: 6 }}
+              initial={{ opacity: 0.4, y: 6 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: Math.min(i * 0.03, 0.3), duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-              className={cn("grid grid-cols-[200px_repeat(7,minmax(0,1fr))] border-b border-line", broken && "grayscale")}
+              className={cn("grid max-h-[200px] flex-1 basis-[76px] grid-cols-[176px_repeat(7,minmax(0,1fr))] border-b border-line", broken && "grayscale")}
             >
-              <div className="flex items-center gap-2.5 border-r border-line px-4 py-3">
+              <div
+                className="flex items-center gap-2.5 border-r border-line px-3 py-3"
+                style={{ backgroundImage: `linear-gradient(90deg, ${acc.color}1f, transparent 75%)` }}
+              >
                 <Avatar
                   src={acc.avatarUrl}
                   name={acc.displayName}
                   color={acc.color}
                   size={28}
-                  spinning={posts.some((p) => p.accountId === acc.id && BUSY.has(p.status))}
+                  busy={posts.some((p) => p.accountId === acc.id && BUSY.has(p.status))}
                 />
                 <div className="min-w-0">
                   <div className="truncate text-[13px] font-medium">{acc.displayName}</div>
@@ -505,7 +561,7 @@ function PostChip({
           <span className="font-mono text-[11px] text-fg tabular">{timeKey(new Date(post.scheduledFor), tz)}</span>
           <StatusMark mark={STATUS_MARK[post.status] ?? "scheduled"} />
         </span>
-        <span className="block truncate text-[11px] text-fg-2">{post.videoTitle}</span>
+        <span className="line-clamp-2 block text-[11px] leading-[14px] text-fg-2 [overflow-wrap:anywhere]">{post.videoTitle}</span>
       </span>
     </button>
   );

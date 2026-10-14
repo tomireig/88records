@@ -5,8 +5,9 @@ import { AlertTriangle, Copy, Send } from "lucide-react";
 import { useEffect, useMemo, useState, useTransition } from "react";
 import { toast } from "sonner";
 import { createPost, loadPublishContext, type PublishContext } from "@/app/actions";
+import { isValidTime } from "@88/core/time";
 import { atLocal, dayKey, duration, timeKey, when } from "@/lib/when";
-import { Avatar, Button, Dialog } from "../ui";
+import { Avatar, Button, cn, Dialog } from "../ui";
 import { ChoicesForm, choicesProblems, ConsentText, EMPTY_CHOICES, type ChoicesState } from "./choices-form";
 
 export interface PublishTarget {
@@ -17,6 +18,10 @@ export interface PublishTarget {
   videoId: string;
   at: string;
   caption: string;
+  /** Franjas preferidas de la cuenta, como atajos de hora. */
+  slots?: string[];
+  /** Si viene de la bandeja: la propuesta que se aprueba al programar. */
+  actionId?: string;
 }
 
 export function PublishDialog({
@@ -57,7 +62,7 @@ export function PublishDialog({
 
   const at = useMemo(() => {
     try {
-      return day && time ? atLocal(day, time, tz) : null;
+      return day && isValidTime(time) ? atLocal(day, time, tz) : null;
     } catch {
       return null;
     }
@@ -74,7 +79,7 @@ export function PublishDialog({
         ...(!at || at.getTime() < Date.now() - 60_000 ? ["Elegí un horario que no haya pasado."] : []),
       ]
     : [];
-  const soon = at && at.getTime() - Date.now() < 2 * 60_000;
+  const soon = at !== null && at.getTime() >= Date.now() - 60_000 && at.getTime() - Date.now() < 2 * 60_000;
 
   function submit() {
     if (!target || !at || !ctx) return;
@@ -82,6 +87,7 @@ export function PublishDialog({
       const r = await createPost({
         accountId: target.accountId,
         videoId: target.videoId,
+        actionId: target.actionId,
         at: (soon ? new Date(Date.now() + 5_000) : at).toISOString(),
         choices: {
           caption,
@@ -102,13 +108,32 @@ export function PublishDialog({
   }
 
   return (
-    <Dialog open={Boolean(target)} onOpenChange={(o) => !o && onClose(false)} title="Publicar en TikTok" width="max-w-4xl">
+    <Dialog
+      open={Boolean(target)}
+      onOpenChange={(o) => !o && onClose(false)}
+      title="Publicar en TikTok"
+      width="max-w-4xl"
+      footer={
+        <>
+          {ctx && <ConsentText brandContent={choices.brandContent} />}
+          {problems.length > 0 && ctx && <p className="mt-2 text-xs text-warn">{problems[0]}</p>}
+          <div className="mt-3 flex justify-end gap-2">
+            <Button variant="ghost" onClick={() => onClose(false)}>
+              Cancelar
+            </Button>
+            <Button variant="primary" icon={<Send className="size-4" />} disabled={!ctx || problems.length > 0} loading={pending} onClick={submit}>
+              {soon ? "Publicar ahora" : at ? `Programar · ${when(at, tz)}` : "Programar"}
+            </Button>
+          </div>
+        </>
+      }
+    >
       {target && (
         <div className="grid gap-0 md:grid-cols-[300px_1fr]">
           <div className="border-b border-line bg-ink-1 p-4 md:border-r md:border-b-0">
             <div className="relative mx-auto aspect-[9/16] w-full max-w-[268px] overflow-hidden rounded-md bg-black">
               {ctx ? (
-                <video src={`${ctx.videoUrl}#t=0.1`} controls playsInline preload="metadata" className="size-full object-contain" />
+                <video src={`${ctx.videoUrl}#t=0.1`} controls playsInline preload="auto" className="size-full object-contain" />
               ) : (
                 <div className="skeleton size-full" />
               )}
@@ -176,15 +201,43 @@ export function PublishDialog({
                   />
                 </div>
 
-                <div className="grid grid-cols-[1fr_120px] gap-2">
+                <div className="grid grid-cols-[1fr_96px] gap-2">
                   <label className="block">
                     <span className="mb-1.5 block text-[13px] font-medium">Día</span>
                     <input type="date" value={day} onChange={(e) => setDay(e.target.value)} className="h-9 w-full rounded-md border border-line-strong bg-ink-3 px-3 font-mono text-sm tabular [color-scheme:dark]" />
                   </label>
                   <label className="block">
                     <span className="mb-1.5 block text-[13px] font-medium">Hora</span>
-                    <input type="time" value={time} onChange={(e) => setTime(e.target.value)} className="h-9 w-full rounded-md border border-line-strong bg-ink-3 px-3 font-mono text-sm tabular [color-scheme:dark]" />
+                    <input
+                      value={time}
+                      onChange={(e) => setTime(e.target.value.replace(/[^0-9:]/g, "").slice(0, 5))}
+                      onBlur={() => /^\d{3,4}$/.test(time) && setTime(time.padStart(4, "0").replace(/^(\d\d)(\d\d)$/, "$1:$2"))}
+                      inputMode="numeric"
+                      placeholder="21:30"
+                      aria-invalid={!isValidTime(time)}
+                      className={cn(
+                        "h-9 w-full rounded-md border bg-ink-3 px-3 font-mono text-sm tabular",
+                        isValidTime(time) ? "border-line-strong" : "border-bad/60",
+                      )}
+                    />
                   </label>
+                  {target.slots && target.slots.length > 0 && (
+                    <div className="col-span-2 flex flex-wrap gap-1.5" aria-label="Franjas de la cuenta">
+                      {target.slots.map((slot) => (
+                        <button
+                          key={slot}
+                          type="button"
+                          onClick={() => setTime(slot)}
+                          className={cn(
+                            "rounded-full border px-2.5 py-0.5 font-mono text-xs tabular transition-colors",
+                            time === slot ? "border-ultra-hi bg-ultra/20 text-fg" : "border-line-strong text-fg-2 hover:text-fg",
+                          )}
+                        >
+                          {slot}
+                        </button>
+                      ))}
+                    </div>
+                  )}
                   <p className="col-span-2 -mt-1 text-xs text-fg-3">
                     Hora de Buenos Aires · ese día lleva <span className="font-mono tabular">{ctx.dayCount}</span> de{" "}
                     <span className="font-mono tabular">{ctx.maxPostsPerDay}</span> publicaciones en esta cuenta
@@ -211,18 +264,6 @@ export function PublishDialog({
               </div>
             )}
 
-            <div className="mt-auto border-t border-line bg-ink-1/60 px-5 py-4">
-              {ctx && <ConsentText brandContent={choices.brandContent} />}
-              {problems.length > 0 && ctx && <p className="mt-2 text-xs text-warn">{problems[0]}</p>}
-              <div className="mt-3 flex justify-end gap-2">
-                <Button variant="ghost" onClick={() => onClose(false)}>
-                  Cancelar
-                </Button>
-                <Button variant="primary" icon={<Send className="size-4" />} disabled={!ctx || problems.length > 0} loading={pending} onClick={submit}>
-                  {soon ? "Publicar ahora" : at ? `Programar · ${when(at, tz)}` : "Programar"}
-                </Button>
-              </div>
-            </div>
           </div>
         </div>
       )}
