@@ -31,6 +31,8 @@ export class S3Storage implements Storage {
     this.bucket = required("S3_BUCKET");
     this.client = new S3Client({
       region: process.env.S3_REGION || "auto",
+      // Bucket en la ruta: lo exige Supabase Storage y R2 lo acepta igual.
+      forcePathStyle: true,
       endpoint: required("S3_ENDPOINT"),
       credentials: { accessKeyId: required("S3_ACCESS_KEY_ID"), secretAccessKey: required("S3_SECRET_ACCESS_KEY") },
       // R2 no soporta los checksums nuevos del SDK en URLs firmadas.
