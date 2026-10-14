@@ -72,13 +72,31 @@ model Artist {
   @@unique([organizationId, slug])
 }
 
+enum ReleaseStatus {
+  uploading
+  analyzing
+  rendering
+  ready
+  failed
+}
+
 model Release {
-  id             String       @id @default(cuid())
-  organizationId String
-  artistId       String
-  title          String
-  releaseDate    DateTime?
-  createdAt      DateTime     @default(now())
+  id                  String        @id @default(cuid())
+  organizationId      String
+  artistId            String
+  title               String
+  releaseDate         DateTime?
+  audioKey            String?
+  coverKey            String?
+  /// Letra pegada por el usuario (opcional): ayuda a corregir la transcripción
+  lyrics              String?
+  status              ReleaseStatus @default(uploading)
+  /// TrackAnalysis de @88/audio (BPM, tonalidad, energía, drops, fragmentos, palabras)
+  analysis            Json?
+  error               String?
+  campaignProposedAt  DateTime?
+  createdById         String?
+  createdAt           DateTime      @default(now())
   organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   artist         Artist       @relation(fields: [artistId], references: [id], onDelete: Cascade)
 
@@ -193,8 +211,14 @@ model Video {
   sha256         String?
   status         VideoStatus  @default(uploading)
   error          String?
-  // "upload" o "engine" (motor de contenido, etapa 3)
+  // "upload" (biblioteca), "raw" (material crudo de un lanzamiento) o "engine" (lo renderizó el motor)
   source         String       @default("upload")
+  /// Del motor: formato, aspecto y parámetros exactos para rehacer o variar el render
+  format         String?
+  aspect         String?
+  renderParams   Json?
+  /// Día de campaña relativo al lanzamiento (D−14 = -14)
+  campaignDay    Int?
   uploadedById   String?
   createdAt      DateTime     @default(now())
   organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
