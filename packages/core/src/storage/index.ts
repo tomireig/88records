@@ -1,7 +1,7 @@
 import type { Readable } from "node:stream";
 import { LocalStorage } from "./local";
 import { S3Storage } from "./s3";
-export { assertSafeKey, videoKey, thumbnailKey } from "./keys";
+export { assertSafeKey, releaseKey, thumbnailKey, videoKey } from "./keys";
 
 export interface UploadTarget {
   url: string;

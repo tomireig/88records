@@ -1,5 +1,5 @@
 // Worker de 88RECORDS®: corre en la PC de Tomi. Procesa videos, publica en TikTok,
-// sigue el estado de cada publicación y refresca tokens.
+// sigue el estado de cada publicación, refresca tokens y corre el motor de contenido.
 import { loadRootEnv } from "@88/core/env";
 
 loadRootEnv();
@@ -33,6 +33,41 @@ await b.work<Payload<typeof JOBS.tiktokStatus>>(JOBS.tiktokStatus, async ([job])
   if (!job) return;
   const state = await pollStatus(job.data.postId, job.data.poll);
   if (state !== "pending") log("tiktok.status", job.data.postId, state);
+});
+
+// ─── Motor de contenido ──────────────────────────────────────────────────────
+const { analyzeRelease, failRelease, proposeCampaign, renderPiece } = await import("./engine/jobs");
+
+await b.work<Payload<typeof JOBS.releaseAnalyze>>(JOBS.releaseAnalyze, async ([job]) => {
+  if (!job) return;
+  const { releaseId } = job.data;
+  // Si el material crudo todavía se está procesando, espera: sin él no hay piezas BTS.
+  const waiting = await db.video.count({ where: { releaseId, source: "raw", status: { in: ["uploading", "processing"] } } });
+  if (waiting && job.retryCount === 0) {
+    await b.send(JOBS.releaseAnalyze, { releaseId }, { startAfter: 20, singletonKey: `${releaseId}:espera:${Date.now() >> 15}` });
+    return;
+  }
+  try {
+    await analyzeRelease(releaseId);
+    log("lanzamiento analizado", releaseId);
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    if (job.retryCount >= (QUEUE_OPTIONS[JOBS.releaseAnalyze].retryLimit ?? 0)) await failRelease(releaseId, message);
+    throw err;
+  }
+});
+
+// De a una pieza por vez: FFmpeg ya usa todos los núcleos.
+await b.work<Payload<typeof JOBS.contentRender>>(JOBS.contentRender, { localConcurrency: 1 }, async ([job]) => {
+  if (!job) return;
+  await renderPiece(job.data.videoId, job.retryCount >= (QUEUE_OPTIONS[JOBS.contentRender].retryLimit ?? 0));
+  log("pieza renderizada", job.data.videoId);
+});
+
+await b.work<Payload<typeof JOBS.campaignPropose>>(JOBS.campaignPropose, async ([job]) => {
+  if (!job) return;
+  const n = await proposeCampaign(job.data.releaseId);
+  log("campaña propuesta", job.data.releaseId, `${n} acciones`);
 });
 
 await b.work(JOBS.tiktokRefresh, async () => {

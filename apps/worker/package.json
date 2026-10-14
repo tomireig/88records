@@ -15,7 +15,9 @@
     "@88/core": "workspace:*",
     "@88/db": "workspace:*",
     "@88/services": "workspace:*",
-    "@88/video": "workspace:*"
+    "@88/video": "workspace:*",
+    "@88/audio": "workspace:*",
+    "@88/ai": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "22.18.0",

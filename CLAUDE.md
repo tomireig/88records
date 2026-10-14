@@ -196,7 +196,7 @@ Origen: copiadas de github.com/pbakaus/impeccable y github.com/freshtechbro/clau
 
 Cada etapa termina funcionando de punta a punta, compilando y probada con material real del sello antes de pasar a la siguiente.
 
-**Estado (14/10/2026):** etapas 1 y 2 terminadas y probadas de punta a punta contra una API de TikTok simulada (falta probar con la app real de TikTok). Etapa 3 en curso: análisis de audio, transcripción, textos con IA y render de los cuatro formatos listos y probados como paquetes; falta cablear lanzamientos en la base, los jobs del worker, la campaña propuesta y la pantalla de Lanzamientos. Ver README.md para correr todo.
+**Estado (14/10/2026):** etapas 1, 2 y 3 terminadas y probadas de punta a punta: panel de TikTok contra una API simulada (falta probar con la app real de TikTok) y lanzamiento → análisis → 24 piezas renderizadas → campaña propuesta en la bandeja. En línea en https://88records.vercel.app con contraseña de equipo; para subir videos en producción falta el storage S3 (R2 o Supabase Storage). Sigue la etapa 4. Ver README.md para correr todo.
 
 1. **Base**: monorepo, Supabase (schema, auth, organizaciones, artistas), R2, colas, `/impeccable init`, sistema de diseño (tokens, tipografía, componentes animados) y shell del dashboard con la dirección visual nueva
 2. **Panel multicuenta de TikTok**: conexión OAuth de varias cuentas, biblioteca, calendario con drag & drop, pantalla de publicación según las reglas de TikTok, jobs de publicación y seguimiento de estado. Pedir la auditoría de TikTok al terminar

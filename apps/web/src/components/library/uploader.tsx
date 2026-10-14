@@ -34,7 +34,7 @@ export function useUploader(): UploaderApi {
   return v;
 }
 
-function put(url: string, headers: Record<string, string>, file: File, onProgress: (p: number) => void): Promise<void> {
+export function put(url: string, headers: Record<string, string>, file: File, onProgress: (p: number) => void): Promise<void> {
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
     xhr.open("PUT", url);

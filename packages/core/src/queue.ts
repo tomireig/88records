@@ -7,6 +7,9 @@ export const JOBS = {
   tiktokPublish: "tiktok.publish",
   tiktokStatus: "tiktok.status",
   tiktokRefresh: "tiktok.refresh-tokens",
+  releaseAnalyze: "release.analyze",
+  contentRender: "content.render",
+  campaignPropose: "campaign.propose",
 } as const;
 
 export type JobName = (typeof JOBS)[keyof typeof JOBS];
@@ -16,6 +19,9 @@ export interface JobData {
   [JOBS.tiktokPublish]: { postId: string };
   [JOBS.tiktokStatus]: { postId: string; poll: number };
   [JOBS.tiktokRefresh]: Record<string, never>;
+  [JOBS.releaseAnalyze]: { releaseId: string };
+  [JOBS.contentRender]: { videoId: string };
+  [JOBS.campaignPropose]: { releaseId: string };
 }
 
 /** Reintentos y vencimientos por cola. */
@@ -24,6 +30,9 @@ export const QUEUE_OPTIONS: Record<JobName, Omit<SendOptions, "db">> = {
   [JOBS.tiktokPublish]: { retryLimit: 3, retryDelay: 60, retryBackoff: true, retryDelayMax: 30 * 60, expireInSeconds: 30 * 60 },
   [JOBS.tiktokStatus]: { retryLimit: 5, retryDelay: 20, retryBackoff: true, expireInSeconds: 5 * 60 },
   [JOBS.tiktokRefresh]: { retryLimit: 1, expireInSeconds: 10 * 60 },
+  [JOBS.releaseAnalyze]: { retryLimit: 1, retryDelay: 60, expireInSeconds: 60 * 60 },
+  [JOBS.contentRender]: { retryLimit: 2, retryDelay: 30, expireInSeconds: 30 * 60 },
+  [JOBS.campaignPropose]: { retryLimit: 1, expireInSeconds: 10 * 60 },
 };
 
 const g = globalThis as unknown as { __boss?: Promise<PgBoss> };

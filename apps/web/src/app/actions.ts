@@ -6,6 +6,7 @@ import { isValidTime } from "@88/core/time";
 import { db } from "@88/db";
 import { discardActions } from "@88/services/actions";
 import { completeUpload, createUpload, deleteVideo, LibraryError, renameVideo } from "@88/services/library";
+import { createRelease, requestCampaign, retryRelease, startReleaseAnalysis, type FileSpec } from "@88/services/releases";
 import {
   allowedPrivacy,
   approveTikTokActions,
@@ -43,7 +44,7 @@ async function run<T extends object>(fn: () => Promise<T>): Promise<Result<T>> {
 }
 
 function refresh() {
-  for (const p of ["/calendario", "/biblioteca", "/cuentas", "/bandeja"]) revalidatePath(p);
+  for (const p of ["/calendario", "/biblioteca", "/cuentas", "/bandeja", "/lanzamientos"]) revalidatePath(p);
 }
 
 // ─── Biblioteca ─────────────────────────────────────────────────────────────
@@ -329,5 +330,58 @@ export async function createArtist(name: string) {
     const artist = await db.artist.create({ data: { organizationId: s.org.id, name: clean, slug } });
     refresh();
     return { artist: { id: artist.id, name: artist.name } };
+  });
+}
+
+// ─── Lanzamientos ───────────────────────────────────────────────────────────
+
+export async function startRelease(input: {
+  artistId: string;
+  title: string;
+  releaseDate: string;
+  lyrics: string;
+  audio: FileSpec;
+  cover: FileSpec | null;
+  clips: FileSpec[];
+}) {
+  return run(async () => {
+    const s = await sessionOrThrow();
+    const r = await createRelease({ organizationId: s.org.id, userId: s.user.id, ...input });
+    return { releaseId: r.release.id, audio: r.audio, cover: r.cover, clips: r.clips };
+  });
+}
+
+export async function finishRelease(releaseId: string) {
+  return run(async () => {
+    const s = await sessionOrThrow();
+    await startReleaseAnalysis(s.org.id, releaseId);
+    revalidatePath("/lanzamientos");
+    return {};
+  });
+}
+
+export async function proposeReleaseCampaign(releaseId: string) {
+  return run(async () => {
+    const s = await sessionOrThrow();
+    await requestCampaign(s.org.id, releaseId);
+    return {};
+  });
+}
+
+export async function retryReleaseAnalysis(releaseId: string) {
+  return run(async () => {
+    const s = await sessionOrThrow();
+    await retryRelease(s.org.id, releaseId);
+    revalidatePath(`/lanzamientos/${releaseId}`);
+    return {};
+  });
+}
+
+/** URL firmada para ver una pieza renderizada. */
+export async function pieceVideoUrl(videoId: string) {
+  return run(async () => {
+    const s = await sessionOrThrow();
+    const v = await db.video.findFirstOrThrow({ where: { id: videoId, organizationId: s.org.id } });
+    return { url: await storage().downloadUrl(v.storageKey, 3600) };
   });
 }

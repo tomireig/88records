@@ -23,6 +23,9 @@ export async function createUpload(params: {
   size: number;
   mimeType: string;
   artistId?: string | null;
+  /** "upload" para la biblioteca; "raw" para material crudo de un lanzamiento */
+  source?: "upload" | "raw";
+  releaseId?: string | null;
 }): Promise<{ video: Video; upload: UploadTarget }> {
   const ext = VIDEO_TYPES[params.mimeType];
   if (!ext) throw new LibraryError("Formato no soportado. Subí MP4, MOV o WebM.");
@@ -43,6 +46,8 @@ export async function createUpload(params: {
       mimeType: params.mimeType,
       sizeBytes: BigInt(params.size),
       uploadedById: params.userId,
+      source: params.source ?? "upload",
+      releaseId: params.releaseId ?? null,
     },
   });
   const upload = await storage().uploadTarget(video.storageKey, params.mimeType, 6 * 3600);

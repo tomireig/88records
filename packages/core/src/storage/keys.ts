@@ -12,3 +12,7 @@ export function videoKey(orgId: string, videoId: string, ext: string): string {
 export function thumbnailKey(orgId: string, videoId: string): string {
   return `org/${orgId}/thumbs/${videoId}.jpg`;
 }
+
+export function releaseKey(orgId: string, releaseId: string, name: string): string {
+  return `org/${orgId}/releases/${releaseId}/${name}`;
+}

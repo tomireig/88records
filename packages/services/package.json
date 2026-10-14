@@ -6,7 +6,8 @@
   "exports": {
     "./tiktok": "./src/tiktok/index.ts",
     "./actions": "./src/actions.ts",
-    "./library": "./src/library.ts"
+    "./library": "./src/library.ts",
+    "./releases": "./src/releases.ts"
   },
   "scripts": {
     "typecheck": "tsc -p tsconfig.json"

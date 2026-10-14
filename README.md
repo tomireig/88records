@@ -1,6 +1,9 @@
 # 88RECORDS® · Plataforma
 
-Panel de marketing del sello. Hoy funciona el **Panel TikTok™**: conectar varias cuentas, subir videos, armar la semana en un calendario, aprobar y publicar, con el estado real de cada publicación. El motor de contenido (análisis de audio, transcripción, textos y render de videos) está listo como paquetes y se está conectando al panel.
+Panel de marketing del sello. Hoy funcionan:
+
+- **Panel TikTok™**: conectar varias cuentas, subir videos, armar la semana en un calendario, aprobar y publicar, con el estado real de cada publicación.
+- **Lanzamientos**: subís el tema, la portada, la fecha y (si querés) material crudo. El worker analiza el audio (BPM, tonalidad, drops, estribillo, letra), renderiza unas 24 piezas (hook, visualizer, lyric con karaoke, detrás de escena con cortes al beat) y propone la campaña de D−14 a D+30 en la bandeja.
 
 El contexto completo, las reglas de producto y el plan por etapas están en [CLAUDE.md](CLAUDE.md).
 

@@ -102,6 +102,12 @@ importers:
 
   apps/worker:
     dependencies:
+      '@88/ai':
+        specifier: workspace:*
+        version: link:../../packages/ai
+      '@88/audio':
+        specifier: workspace:*
+        version: link:../../packages/audio
       '@88/connectors':
         specifier: workspace:*
         version: link:../../packages/connectors

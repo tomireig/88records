@@ -127,7 +127,8 @@ export async function listAccounts(organizationId: string, tz: string): Promise<
 
 export async function listVideos(organizationId: string): Promise<VideoDTO[]> {
   const videos = await db.video.findMany({
-    where: { organizationId },
+    // El material crudo de los lanzamientos no se publica: queda en su lanzamiento.
+    where: { organizationId, source: { not: "raw" } },
     include: { artist: { select: { name: true } } },
     orderBy: { createdAt: "desc" },
     take: 300,
@@ -219,3 +220,114 @@ export async function listProposals(organizationId: string, from?: Date, to?: Da
 export async function countProposals(organizationId: string): Promise<number> {
   return db.action.count({ where: { organizationId, status: "proposed" } });
 }
+
+// ─── Lanzamientos ───────────────────────────────────────────────────────────
+
+/** Lo que la pantalla usa del TrackAnalysis que guarda el worker (@88/audio). */
+export interface AnalysisView {
+  durationSec: number;
+  bpm: number;
+  key: { name: string; short: string; camelot: string };
+  energy: number[];
+  energyStep: number;
+  drops: { at: number; strength: number }[];
+  chorus: { start: number; end: number } | null;
+  fragments: { length: number; start: number; end: number; reason: string }[];
+  profile: { energyLevel: string; mood: string; tempoFeel: string };
+  words: { word: string; start: number; end: number }[] | null;
+}
+
+export interface ReleaseSummary {
+  id: string;
+  title: string;
+  artistName: string;
+  releaseDate: string | null;
+  status: "uploading" | "analyzing" | "rendering" | "ready" | "failed";
+  coverUrl: string | null;
+  pieces: { total: number; ready: number };
+  proposals: number;
+}
+
+export async function listReleases(organizationId: string): Promise<ReleaseSummary[]> {
+  const releases = await db.release.findMany({
+    where: { organizationId },
+    include: { artist: { select: { name: true } }, videos: { where: { source: "engine" }, select: { status: true } }, actions: { where: { status: "proposed" }, select: { id: true } } },
+    orderBy: [{ releaseDate: "desc" }, { createdAt: "desc" }],
+  });
+  return Promise.all(
+    releases.map(async (r) => ({
+      id: r.id,
+      title: r.title,
+      artistName: r.artist.name,
+      releaseDate: r.releaseDate?.toISOString() ?? null,
+      status: r.status,
+      coverUrl: await signedThumb(r.coverKey),
+      pieces: { total: r.videos.length, ready: r.videos.filter((v) => v.status === "ready").length },
+      proposals: r.actions.length,
+    })),
+  );
+}
+
+export interface PieceDTO {
+  id: string;
+  title: string;
+  format: string | null;
+  day: number | null;
+  status: VideoDTO["status"];
+  error: string | null;
+  thumbUrl: string | null;
+  durationSec: number | null;
+  why: string | null;
+  caption: string | null;
+}
+
+export async function getRelease(organizationId: string, id: string) {
+  const r = await db.release.findFirst({
+    where: { id, organizationId },
+    include: {
+      artist: { select: { id: true, name: true } },
+      videos: { orderBy: [{ campaignDay: "asc" }, { createdAt: "asc" }] },
+      actions: { where: { status: "proposed" }, select: { id: true } },
+    },
+  });
+  if (!r) return null;
+  const accounts = await db.tikTokAccount.count({ where: { organizationId, artistId: r.artistId, status: "active" } });
+  const pieces: PieceDTO[] = await Promise.all(
+    r.videos
+      .filter((v) => v.source === "engine")
+      .map(async (v) => {
+        const stored = v.renderParams as { why?: string; copy?: { caption?: string } } | null;
+        return {
+          id: v.id,
+          title: v.title,
+          format: v.format,
+          day: v.campaignDay,
+          status: v.status,
+          error: v.error,
+          thumbUrl: await signedThumb(v.thumbnailKey),
+          durationSec: v.durationSec,
+          why: stored?.why ?? null,
+          caption: stored?.copy?.caption ?? null,
+        };
+      }),
+  );
+  return {
+    id: r.id,
+    title: r.title,
+    artist: r.artist,
+    releaseDate: r.releaseDate?.toISOString() ?? null,
+    status: r.status,
+    error: r.error,
+    lyrics: r.lyrics,
+    coverUrl: await signedThumb(r.coverKey),
+    audioUrl: r.audioKey ? await signedThumb(r.audioKey) : null,
+    analysis: r.analysis as AnalysisView | null,
+    raw: r.videos.filter((v) => v.source === "raw").map((v) => ({ id: v.id, title: v.title, status: v.status })),
+    pieces,
+    proposals: r.actions.length,
+    artistAccounts: accounts,
+    campaignProposedAt: r.campaignProposedAt?.toISOString() ?? null,
+  };
+}
+
+export type ReleaseDetail = NonNullable<Awaited<ReturnType<typeof getRelease>>>;

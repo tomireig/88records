@@ -1,6 +1,6 @@
 "use client";
 
-import { CalendarDays, Clapperboard, Inbox, LogOut, UsersRound } from "lucide-react";
+import { CalendarDays, Clapperboard, Disc3, Inbox, LogOut, UsersRound } from "lucide-react";
 import { logout } from "@/app/login/actions";
 import { motion } from "motion/react";
 import Link from "next/link";
@@ -9,6 +9,7 @@ import type { ReactNode } from "react";
 import { cn } from "./ui";
 
 const NAV = [
+  { href: "/lanzamientos", label: "Lanzamientos", icon: Disc3 },
   { href: "/calendario", label: "Calendario", icon: CalendarDays },
   { href: "/biblioteca", label: "Biblioteca", icon: Clapperboard },
   { href: "/cuentas", label: "Cuentas", icon: UsersRound },
@@ -89,7 +90,7 @@ export function Shell({
 
       <nav
         aria-label="Principal"
-        className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-4 border-t border-line bg-ink-1/90 pb-[env(safe-area-inset-bottom)] backdrop-blur-xl md:hidden"
+        className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-5 border-t border-line bg-ink-1/90 pb-[env(safe-area-inset-bottom)] backdrop-blur-xl md:hidden"
       >
         {NAV.map(({ href, label, icon: Icon }) => {
           const active = path.startsWith(href);
