@@ -13,7 +13,8 @@
     "seed": "dotenv -e ../../.env -- tsx prisma/seed.ts",
     "studio": "dotenv -e ../../.env -- prisma studio",
     "typecheck": "tsc -p tsconfig.json",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "migrate:vercel": "node scripts/migrate-deploy.mjs"
   },
   "dependencies": {
     "@prisma/client": "6.19.3"

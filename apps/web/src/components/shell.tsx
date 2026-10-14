@@ -1,6 +1,7 @@
 "use client";
 
-import { CalendarDays, Clapperboard, Inbox, UsersRound } from "lucide-react";
+import { CalendarDays, Clapperboard, Inbox, LogOut, UsersRound } from "lucide-react";
+import { logout } from "@/app/login/actions";
 import { motion } from "motion/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -19,11 +20,13 @@ export function Shell({
   inboxCount,
   notices,
   userLabel,
+  canLogout,
 }: {
   children: ReactNode;
   inboxCount: number;
   notices: ReactNode;
   userLabel: string;
+  canLogout: boolean;
 }) {
   const path = usePathname();
   return (
@@ -65,10 +68,17 @@ export function Shell({
         <span aria-hidden className="mt-auto mb-4 rotate-180 text-[11px] font-bold tracking-[0.12em] text-fg-3 [writing-mode:vertical-rl]">
           88RECORDS<span className="font-medium">®</span>
         </span>
-        <span className="group relative grid size-8 place-items-center rounded-full border border-line-strong text-[11px] text-fg-2" tabIndex={0} aria-label={userLabel}>
-          {userLabel.replace(/^Modo local · /, "").slice(0, 1).toUpperCase()}
-          <Tip>{userLabel}</Tip>
-        </span>
+        <form action={logout}>
+          <button
+            type="submit"
+            disabled={!canLogout}
+            className="group relative grid size-8 place-items-center rounded-full border border-line-strong text-[11px] text-fg-2 enabled:hover:border-white/25 enabled:hover:text-fg"
+            aria-label={canLogout ? `${userLabel} · Salir` : userLabel}
+          >
+            {canLogout ? <LogOut className="size-3.5" /> : userLabel.replace(/^Modo local · /, "").slice(0, 1).toUpperCase()}
+            <Tip>{canLogout ? `Salir · ${userLabel}` : userLabel}</Tip>
+          </button>
+        </form>
       </aside>
 
       {/* En escritorio la ventana no scrollea: cada pantalla scrollea adentro y las columnas laterales caben siempre. */}

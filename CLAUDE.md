@@ -43,10 +43,10 @@ Modelo: `Action { id, artistId, releaseId?, type, payload, preview, reason, stat
 OAuth por artista contra cada plataforma. Tokens cifrados AES-256-GCM (`TOKEN_ENCRYPTION_KEY`), refresh automático, aviso cuando una conexión se cae. Interfaz común `PlatformConnector`.
 
 ### 2. Análisis de audio
-Al subir el tema, worker Python con librosa:
+Al subir el tema, el worker lo analiza en TypeScript (`packages/audio`, FFmpeg decodifica y el DSP es propio):
 - BPM, tonalidad, duración, curva de energía, detección de drops y estribillos
 - Los mejores fragmentos de 7, 15 y 30 segundos para video corto (picos de energía, entrada del hook)
-- Transcripción con timestamps por palabra (faster-whisper) si tiene voz, para subtítulos y para identificar el hook letrístico
+- Transcripción con timestamps por palabra (Whisper local con transformers.js/ONNX, `packages/ai`) si tiene voz, para subtítulos y para identificar el hook letrístico
 - Perfil del tema (mood, género estimado) para captions, pitch y segmentación de anuncios
 
 ### 3. Motor de contenido (genera los videos, no ideas de videos)
@@ -59,7 +59,7 @@ Al subir el tema, worker Python con librosa:
 - Cada render guarda sus `RenderParams` en JSON para poder rehacerlo o variarlo
 
 ### 4. Publicador
-Publicación programada con jobs diferidos de BullMQ. Interfaz `SocialProvider`:
+Publicación programada con jobs diferidos de pg-boss. Interfaz `SocialProvider`:
 - **Instagram/Facebook** (Graph API, cuenta Business o Creator): Reels, posts, stories
 - **TikTok** (Content Posting API): sin auditoría, los videos llegan como borrador al inbox de la cuenta; con auditoría, publica directo. Flag `TIKTOK_DIRECT_POST_ENABLED`
 - **YouTube** (Data API): Shorts y videos. Proyectos sin auditoría suben como privados; pedir la auditoría temprano
@@ -112,14 +112,14 @@ Publicación programada con jobs diferidos de BullMQ. Interfaz `SocialProvider`:
 
 - Monorepo: pnpm workspaces + Turborepo
 - `apps/web`: Next.js 15, TypeScript, Tailwind, shadcn/ui. Route handlers como backend
-- `apps/worker`: Node + BullMQ, orquesta jobs (render, publicación, ingesta de métricas, mails, manager IA)
-- `apps/audio`: servicio Python (librosa, faster-whisper, FFmpeg) para análisis y transcripción
-- `packages/db`: Prisma sobre Postgres de Supabase (plan gratis). Auth con Supabase Auth
+- `apps/worker`: Node + pg-boss, orquesta jobs (render, publicación, ingesta de métricas, mails, manager IA)
+- Análisis de audio y transcripción en Node dentro del worker (`packages/audio` y `packages/ai`), sin Python: decisión de Tomi del 14/10/2026 para no sumar un servicio más en la PC
+- `packages/db`: Prisma sobre Postgres (Neon conectado desde Vercel, o Supabase). Variables `DATABASE_URL` y `DATABASE_URL_UNPOOLED`. Auth con Supabase Auth; mientras no esté, contraseña de equipo (`APP_PASSWORD`)
 - `packages/connectors`: `PlatformConnector` y `SocialProvider` por plataforma
 - `packages/video`: wrappers de FFmpeg y plantillas de formatos
-- `packages/ai`: `AIProvider` con Gemini y Groq (tiers gratuitos) y Ollama local como respaldo. Anthropic y OpenAI enchufables cuando haya presupuesto
+- `packages/ai`: `AIProvider` con Ollama local primero (decisión de Tomi) y plantillas escritas a mano como respaldo. Gemini, Groq, Anthropic y OpenAI enchufables implementando la interfaz
 - Storage: Cloudflare R2 (10 GB gratis, sin costo de descarga) vía SDK de S3, URLs firmadas
-- Colas: Redis (Upstash gratis, o Redis local en desarrollo)
+- Colas: pg-boss sobre el mismo Postgres (sin Redis: un worker de BullMQ en reposo se come el cupo gratis de Upstash). Decisión de Tomi del 13/10/2026
 - Mails: Resend
 - Hosting: Vercel Hobby para la web durante la fase interna. **El worker y el servicio de audio corren en la PC de Tomi** (render y transcripción son pesados y no entran en ningún plan gratis). Al pasar a SaaS: VPS y Vercel Pro, pagados con las primeras suscripciones
 - Cobros (fase SaaS): Mercado Pago suscripciones para LatAm, Stripe después
@@ -130,7 +130,7 @@ Publicación programada con jobs diferidos de BullMQ. Interfaz `SocialProvider`:
 Módulo propio dentro de la app, usable desde el primer día aunque el resto de los motores no exista todavía. Sirve para manejar todas las cuentas de TikTok del sello y de sus artistas desde un solo lugar y automatizar la subida con un calendario.
 
 **Cuentas**
-- Botón "Conectar cuenta" → abre el login oficial de TikTok (Login Kit, OAuth 2.0 con PKCE). El usuario inicia sesión en TikTok y autoriza; la app recibe tokens, nunca la contraseña
+- Botón "Conectar cuenta" → abre el login oficial de TikTok (Login Kit, OAuth 2.0; para web TikTok no usa PKCE, la protección es el `state` firmado). El usuario inicia sesión en TikTok y autoriza; la app recibe tokens, nunca la contraseña
 - Se conectan tantas cuentas como haga falta, cada una con su propio token cifrado (AES-256-GCM) y refresh automático antes de que venza
 - Tarjeta por cuenta: avatar, nombre, artista al que pertenece, estado de la conexión (activa, por vencer, caída → botón reconectar), publicaciones de hoy contra el límite diario, próxima publicación
 - Scopes: `user.info.basic`, `video.upload` (modo borrador) y `video.publish` (publicación directa)
@@ -145,7 +145,7 @@ Módulo propio dentro de la app, usable desde el primer día aunque el resto de 
 - Arrastrar un video de la biblioteca a un horario de una cuenta = programarlo. Arrastrar dentro del calendario = reprogramar
 - Reglas por cuenta: franjas horarias preferidas, máximo de posts por día (el tope real de TikTok ronda los 15 por cuenta, compartido entre apps), plantilla de caption y hashtags
 - "Autollenar semana": reparte los videos pendientes en los huecos libres respetando las reglas. Queda todo como propuesta en la bandeja de aprobación hasta que el usuario confirma
-- Cada publicación es un job diferido de BullMQ (`tiktok.publish`) con reintentos y backoff
+- Cada publicación es un job diferido de pg-boss (`tiktok.publish`, singletonKey = id del post) con reintentos y backoff
 
 **Pantalla de publicación (obligatoria por las reglas de TikTok, si no la app no pasa la auditoría)**
 - Al abrirla, consultar `creator_info` de la cuenta: mostrar el nickname, bloquear si la cuenta no puede publicar ahora, respetar la duración máxima
@@ -196,7 +196,9 @@ Origen: copiadas de github.com/pbakaus/impeccable y github.com/freshtechbro/clau
 
 Cada etapa termina funcionando de punta a punta, compilando y probada con material real del sello antes de pasar a la siguiente.
 
-1. **Base**: monorepo, Supabase (schema, auth, organizaciones, artistas), R2, Redis, colas, `/impeccable init`, sistema de diseño (tokens, tipografía, componentes animados) y shell del dashboard con la dirección visual nueva
+**Estado (14/10/2026):** etapas 1 y 2 terminadas y probadas de punta a punta contra una API de TikTok simulada (falta probar con la app real de TikTok). Etapa 3 en curso: análisis de audio, transcripción, textos con IA y render de los cuatro formatos listos y probados como paquetes; falta cablear lanzamientos en la base, los jobs del worker, la campaña propuesta y la pantalla de Lanzamientos. Ver README.md para correr todo.
+
+1. **Base**: monorepo, Supabase (schema, auth, organizaciones, artistas), R2, colas, `/impeccable init`, sistema de diseño (tokens, tipografía, componentes animados) y shell del dashboard con la dirección visual nueva
 2. **Panel multicuenta de TikTok**: conexión OAuth de varias cuentas, biblioteca, calendario con drag & drop, pantalla de publicación según las reglas de TikTok, jobs de publicación y seguimiento de estado. Pedir la auditoría de TikTok al terminar
 3. **Del audio al video**: subida del release, análisis de audio, motor de contenido renderizando videos reales que caen en la biblioteca y en la bandeja de aprobación
 4. **Más plataformas**: Instagram y YouTube en el mismo publicador y calendario. Iniciar sus revisiones de app

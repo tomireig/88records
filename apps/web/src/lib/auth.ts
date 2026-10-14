@@ -2,7 +2,9 @@ import "server-only";
 import { db, type Organization, type Role, type User } from "@88/db";
 import { redirect } from "next/navigation";
 import { cache } from "react";
-import { localMode, supabaseConfigured, supabaseServer } from "./supabase";
+import { cookies } from "next/headers";
+import { authMode, supabaseServer, teamEmail } from "./supabase";
+import { TEAM_COOKIE, verifyTeamToken } from "./team-session";
 
 export interface Session {
   user: User;
@@ -40,11 +42,16 @@ async function ensureMembership(email: string, authId: string | null, asOwner: b
 
 /** Sesión actual o null. Cacheada por request. */
 export const getSession = cache(async (): Promise<Session | null> => {
-  if (localMode()) {
+  const mode = authMode();
+  if (mode === "local") {
     const email = (process.env.LOCAL_USER_EMAIL || "local@88records.dev").toLowerCase();
     return ensureMembership(email, null, true);
   }
-  if (!supabaseConfigured()) return null;
+  if (mode === "password") {
+    const token = (await cookies()).get(TEAM_COOKIE)?.value;
+    return (await verifyTeamToken(token)) ? ensureMembership(teamEmail(), null, true) : null;
+  }
+  if (mode === "none") return null;
 
   const supabase = await supabaseServer();
   const { data } = await supabase.auth.getUser();

@@ -29,8 +29,9 @@ export const QUEUE_OPTIONS: Record<JobName, Omit<SendOptions, "db">> = {
 const g = globalThis as unknown as { __boss?: Promise<PgBoss> };
 
 function connectionString(): string {
-  // pg-boss necesita conexión de sesión: en Supabase, el session pooler (puerto 5432) o la directa.
-  const url = process.env.DIRECT_URL || process.env.DATABASE_URL;
+  // pg-boss necesita conexión de sesión: la URL sin pooler (Neon) o el session pooler (Supabase).
+  const e = process.env;
+  const url = e.DATABASE_URL_UNPOOLED || e.POSTGRES_URL_NON_POOLING || e.DATABASE_URL || e.POSTGRES_URL;
   if (!url) throw new Error("Falta DATABASE_URL");
   return url;
 }

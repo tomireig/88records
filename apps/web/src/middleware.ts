@@ -1,15 +1,32 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import { TEAM_COOKIE, verifyTeamToken } from "@/lib/team-session";
 
 const PUBLIC = ["/login", "/auth/", "/api/files/", "/privacidad", "/terminos"];
 
+function toLogin(request: NextRequest) {
+  const login = request.nextUrl.clone();
+  login.pathname = "/login";
+  login.search = "";
+  return NextResponse.redirect(login);
+}
+
 export async function middleware(request: NextRequest) {
+  const isPublic = PUBLIC.some((p) => request.nextUrl.pathname.startsWith(p));
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
   if (!url || !key) {
-    if (process.env.NODE_ENV === "production" && !PUBLIC.some((p) => request.nextUrl.pathname.startsWith(p))) {
-      return new NextResponse("Falta configurar Supabase (NEXT_PUBLIC_SUPABASE_URL y NEXT_PUBLIC_SUPABASE_ANON_KEY).", { status: 503 });
+    // Contraseña de equipo mientras no haya Supabase.
+    if (process.env.APP_PASSWORD) {
+      if (isPublic || (await verifyTeamToken(request.cookies.get(TEAM_COOKIE)?.value))) return NextResponse.next();
+      return toLogin(request);
+    }
+    if (process.env.NODE_ENV === "production" && !isPublic) {
+      return new NextResponse(
+        "Falta configurar el acceso: cargá APP_PASSWORD (contraseña de equipo) o las claves de Supabase en Vercel.",
+        { status: 503, headers: { "Content-Type": "text/plain; charset=utf-8" } },
+      );
     }
     return NextResponse.next();
   }
@@ -27,13 +44,7 @@ export async function middleware(request: NextRequest) {
     },
   });
   const { data } = await supabase.auth.getUser();
-
-  if (!data.user && !PUBLIC.some((p) => request.nextUrl.pathname.startsWith(p))) {
-    const login = request.nextUrl.clone();
-    login.pathname = "/login";
-    login.search = "";
-    return NextResponse.redirect(login);
-  }
+  if (!data.user && !isPublic) return toLogin(request);
   return response;
 }
 

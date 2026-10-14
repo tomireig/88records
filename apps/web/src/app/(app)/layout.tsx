@@ -5,7 +5,7 @@ import { AlertTriangle, PowerOff } from "lucide-react";
 import { Shell } from "@/components/shell";
 import { requireSession } from "@/lib/auth";
 import { countProposals } from "@/lib/data";
-import { localMode } from "@/lib/supabase";
+import { authMode, localMode } from "@/lib/supabase";
 
 export const dynamic = "force-dynamic";
 
@@ -48,6 +48,18 @@ export default async function AppLayout({ children }: { children: React.ReactNod
           {mode.directPost ? "Publicación directa activada." : "Los videos llegan como borrador a la app de TikTok y se terminan de publicar ahí."}
         </Notice>
       )}
+      {!process.env.TOKEN_ENCRYPTION_KEY && (
+        <Notice tone="bad" icon={<AlertTriangle className="size-4" />}>
+          Falta <code className="font-mono text-xs">TOKEN_ENCRYPTION_KEY</code>: sin esa clave no se pueden guardar las conexiones de TikTok. Generala con{" "}
+          <code className="font-mono text-xs">pnpm keygen</code> y cargala en las variables del proyecto.
+        </Notice>
+      )}
+      {process.env.VERCEL && process.env.STORAGE_DRIVER !== "s3" && (
+        <Notice tone="warn" icon={<AlertTriangle className="size-4" />}>
+          <strong className="font-medium">Falta el storage de videos.</strong> En Vercel los archivos no se pueden guardar en disco: configurá Cloudflare R2 o
+          Supabase Storage (<code className="font-mono text-xs">STORAGE_DRIVER=s3</code> y las variables <code className="font-mono text-xs">S3_*</code>) para subir videos.
+        </Notice>
+      )}
       {!TikTokClient.isConfigured() && (
         <Notice tone="info" icon={<AlertTriangle className="size-4" />}>
           Falta la app de TikTok: cargá <code className="font-mono text-xs">TIKTOK_CLIENT_KEY</code> y{" "}
@@ -58,7 +70,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   );
 
   return (
-    <Shell inboxCount={inboxCount} notices={notices} userLabel={localMode() ? `Modo local · ${session.user.email}` : session.user.email}>
+    <Shell inboxCount={inboxCount} notices={notices} canLogout={authMode() !== "local"} userLabel={localMode() ? `Modo local · ${session.user.email}` : session.user.email}>
       {children}
     </Shell>
   );
